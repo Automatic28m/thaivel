@@ -1,15 +1,19 @@
+'use client'
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function CategoryGrid() {
-  const categories = [
-    { name: "Temple", src: "/images/templeThumbnail.JPG" },
-    { name: "Beach", src: "/images/beachThumbnail.JPG" },
-    { name: "Cafe", src: "/images/cafeThumbnail.JPG" },
-    { name: "Restaurant", src: "/images/restaurantThumbnail.JPG" },
-    { name: "Street Food", src: "/images/streetfoodThumbnail.JPG" },
-    { name: "Urban", src: "/images/urbanThumbnail.jpeg" },
-  ];
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get('/api/getCategories')
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error("Category fetch failed:", err));
+  }, []);
+
 
   return (
     <div className="grid grid-cols-12 gap-3 md:gap-12">
@@ -21,7 +25,7 @@ export default function CategoryGrid() {
         >
           {/* Image with matching 700ms duration */}
           <Image
-            src={cat.src}
+            src={cat.thumbnail}
             alt={`${cat.name} Category`}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
