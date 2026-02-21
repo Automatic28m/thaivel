@@ -11,8 +11,16 @@ export async function GET() {
                     s.name_en AS sub_district, 
                     am.name_en AS district, 
                     p.name_en AS province, 
-                    g.name_eng AS geography
+                    g.name_eng AS geography,
+                    a.google_maps_url as gmapsUrl,
+                    a.open_hour,
+                    a.tel,
+                    a.igUrl,
+                    a.facebookUrl,
+                    a.tiktokUrl,
+                    c.name AS category
                     FROM attractions a
+                    LEFT JOIN category c ON a.category_id = c.id
                     LEFT JOIN sub_districts s ON a.sub_district_id = s.id
                     LEFT JOIN amphures am ON s.amphure_id = am.id
                     LEFT JOIN provinces p ON am.province_id = p.id

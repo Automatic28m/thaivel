@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import HorizontalRule from "../components/HorizontalRule";
+import HorizontalRule from "../../components/HorizontalRule";
 import axios from "axios";
 
 const AttractionForm = () => {
@@ -16,6 +16,7 @@ const AttractionForm = () => {
     description: "",
   });
 
+  const [thumbnailFile, setThumbnailFile] = useState(null);
   const [albumFiles, setAlbumFiles] = useState([]);
   const handleFileChange = (e) => {
     setAlbumFiles(Array.from(e.target.files));
@@ -79,8 +80,13 @@ const AttractionForm = () => {
   }, [selectedIds.amphureId]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, files } = e.target;
+
+    if (type === "file") {
+      setThumbnailFile(files[0]);
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -91,41 +97,35 @@ const AttractionForm = () => {
       return;
     }
 
-    const namePrefix = formData.name
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-") // Replace spaces with dashes
-      .replace(/[^\w-]/g, ""); // Remove special characters
-
-    const albumFileNames = albumFiles.map(
-      (_, index) => `/images/attractions/${namePrefix}-${index + 1}.jpg`,
-    );
-
-    const payload = {
-      method: 'insert',
-      name: formData.name,
-      sub_district_id: selectedIds.subDistrictId,
-      location: formData.location,
-      openHour: formData.openHour,
-      tel: formData.tel,
-      igUrl: formData.ig,
-      facebookUrl: formData.facebook,
-      tiktokUrl: formData.tiktokUrl,
-      googleMapsUrl: formData.googleMapsUrl,
-      description: formData.description,
-      category_id: selectedCategoryId,
-      thumbnail: `/images/attractions/${namePrefix}-thumbnail.jpg`,
-      albumFiles: albumFileNames,
-    };
-    console.table(payload);
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("sub_district_id", selectedIds.subDistrictId);
+    data.append("category_id", selectedCategoryId);
+    data.append("location", formData.location);
+    data.append("openHour", formData.openHour);
+    data.append("tel", formData.tel);
+    data.append("igUrl", formData.igUrl);
+    data.append("facebookUrl", formData.facebookURl);
+    data.append("tiktokUrl", formData.tiktokUrl);
+    data.append("googleMapsUrl", formData.googleMapsUrl);
+    data.append("description", formData.description);
+    data.append("thumbnailFile", thumbnailFile);
+    albumFiles.forEach((file) => data.append("albumFiles", file));
 
     try {
-      const response = await axios.post("/api/attractions", payload);
+      // 4. Send to the API
+      const response = await axios.post(
+        "/api/attractions/insertAttraction",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
 
       if (response.status === 201) {
-        alert("Success! Attraction added to MySQL database. 🌱");
-
-        // Reset form data
+        alert("Success! Files saved to project and data saved to MySQL.");
         setFormData({
           name: "",
           location: "",
@@ -133,36 +133,28 @@ const AttractionForm = () => {
           tel: "",
           ig: "",
           facebook: "",
+          tiktokUrl: "",
           googleMapsUrl: "",
           description: "",
         });
-
-        // FIX: Corrected casing for the setter function
+        setThumbnailFile(null);
+        setAlbumFiles([]);
         setSelectedIds({ provinceId: "", amphureId: "", subDistrictId: "" });
         setSelectedCategoryId("");
-        setAlbumFiles([]);
       }
     } catch (error) {
-      // Improved error logging for debugging connection issues
-      const errorMessage =
-        error.response?.data?.error || "Connection to API failed";
-      console.error("Submission Error:", error);
-      alert(`Error: ${errorMessage}`);
+      console.error("Upload failed:", error);
+      alert("Check console for error details.");
     }
   };
 
   return (
     <div className="min-h-screen py-20 px-4">
       <div className="max-w-5xl mx-auto">
-        <h2 className="">
-          Add New Attraction
-        </h2>
+        <h2 className="">Add New Attraction</h2>
         <HorizontalRule borderColor="border-primary" />
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-10 space-y-6 uppercase"
-        >
+        <form onSubmit={handleSubmit} className="mt-10 space-y-6 uppercase">
           {/* Main Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col space-y-2">
@@ -303,7 +295,7 @@ const AttractionForm = () => {
               <input
                 type="text"
                 name="ig"
-                value={formData.ig}
+                value={formData.igUrl}
                 onChange={handleChange}
                 placeholder="instagram link"
                 className="bg-transparent border-b-2 border-primary p-2 focus:border-primary outline-none transition-colors text-primary"
@@ -314,7 +306,7 @@ const AttractionForm = () => {
               <input
                 type="text"
                 name="facebook"
-                value={formData.facebook}
+                value={formData.facebookUrl}
                 onChange={handleChange}
                 placeholder="facebook link"
                 className="bg-transparent border-b-2 border-primary p-2 focus:border-primary outline-none transition-colors text-primary"
@@ -325,7 +317,7 @@ const AttractionForm = () => {
               <input
                 type="text"
                 name="Tiktok"
-                value={formData.fiktok}
+                value={formData.tiktokUrl}
                 onChange={handleChange}
                 placeholder="facebook link"
                 className="bg-transparent border-b-2 border-primary p-2 focus:border-primary outline-none transition-colors text-primary"
@@ -357,6 +349,25 @@ const AttractionForm = () => {
               placeholder="Describe the serene atmosphere and slow-life ambiance..."
               className="bg-transparent border-2 border-primary/20 p-4 focus:border-primary outline-none transition-colors text-primary lowercase first-letter:uppercase leading-relaxed"
             />
+          </div>
+
+          <div className="flex flex-col space-y-2 pt-4">
+            <label className="opacity-60">
+              Thumbnail image (Select single Image)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleChange}
+              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
+            />
+            <p className="text-[10px] opacity-40">
+              {thumbnailFile ? (
+                <span>Selected</span>
+              ) : (
+                <span>Not Selected</span>
+              )}
+            </p>
           </div>
 
           <div className="flex flex-col space-y-2 pt-4">
