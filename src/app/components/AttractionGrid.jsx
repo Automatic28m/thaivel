@@ -9,11 +9,11 @@ export default function AttractionGrid({attractions = "attraction"}) {
       {attractions.map((item) => (
         <Link
           key={item.id}
-          href={`/attractions/${item.id}`}
+          href={`/attractionPage/${item.id}`}
           className="aspect-9/16 w-full col-span-6 md:col-span-4 relative flex flex-col justify-end p-3 md:p-6 overflow-hidden group shadow-lg"
         >
           <Image
-            src={item.src}
+            src={item.thumbnail}
             alt={item.name}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -28,7 +28,7 @@ export default function AttractionGrid({attractions = "attraction"}) {
               {item.name}
             </span>
             <span className="block uppercase font-serif text-sm text-secondary/80 tracking-widest mt-1">
-              {item.location}
+              {item.province}
             </span>
           </div>
         </Link>

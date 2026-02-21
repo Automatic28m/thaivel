@@ -9,7 +9,7 @@ export default function Navbar() {
   const navItems = [
     { id: "Home", name: "Home", link: "/" },
     { id: "About", name: "About", link: "/about" },
-    { id: "Attractions", name: "Attractions", link: "/attractions" },
+    { id: "Attractions", name: "Attractions", link: "/allAttractions" },
     { id: "Regions", name: "Regions", link: "/aboutThailand" },
   ];
 

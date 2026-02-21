@@ -1,9 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import HorizontalRule from "../../components/HorizontalRule";
+import HorizontalRule from "../../../components/HorizontalRule";
 import axios from "axios";
+import { useParams, useRouter } from "next/navigation"; // Added for routing
 
-const AttractionForm = () => {
+const EditAttraction = () => {
+  const { id } = useParams(); // Get ID from URL
+  const router = useRouter();
+  console.log("Current Attraction ID from URL:", id);
+
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -18,70 +23,77 @@ const AttractionForm = () => {
 
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [albumFiles, setAlbumFiles] = useState([]);
-  const handleFileChange = (e) => {
-    setAlbumFiles(Array.from(e.target.files));
-  };
-
+  
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [subDistricts, setSubDistricts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [selectedIds, setSelectedIds] = useState({
     provinceId: "",
-    amphureId: "",
+    districtId: "",
     subDistrictId: "",
   });
-
-  const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
+  // 1. Fetch Categories & Provinces (Same as AttractionForm)
   useEffect(() => {
-    axios
-      .get("/api/getCategories")
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.error("Category fetch failed:", err));
+    axios.get("/api/getCategories").then((res) => setCategories(res.data));
+    axios.get("/api/locations?type=provinces").then((res) => setProvinces(res.data));
   }, []);
 
+  // 2. NEW: Fetch existing data for editing
   useEffect(() => {
-    axios
-      .get("/api/locations?type=provinces")
-      .then((res) => setProvinces(res.data))
-      .catch((err) => console.error("Province fetch failed:", err));
-  }, []);
+    if (!id) return;
+    
+    axios.get(`/api/attractions/getAttractionById?id=${id}`)
+      .then((res) => {
+        const attraction = res.data.data; // Targeting the object from your SQL result
+        
+        setFormData({
+          name: attraction.name || "",
+          location: attraction.location || "",
+          openHour: attraction.open_hour || "",
+          tel: attraction.tel || "",
+          igUrl: attraction.igUrl || "",
+          facebookUrl: attraction.facebookUrl || "",
+          tiktokUrl: attraction.tiktokUrl || "",
+          googleMapsUrl: attraction.google_maps_url || "",
+          description: attraction.description || "",
+        });
 
+        setSelectedCategoryId(attraction.category_id || "");
+        
+        // Setting the province ID triggers the cascade effects below
+        setSelectedIds({
+          provinceId: attraction.province_id,
+          districtId: attraction.district_id,
+          subDistrictId: attraction.sub_district_id,
+        });
+      });
+  }, [id]);
+
+  useEffect(() => {
+    console.table(formData);
+  })
+
+  // 3. Location Cascades (District & Sub-district logic remains identical)
   useEffect(() => {
     if (selectedIds.provinceId) {
-      axios
-        .get(`/api/locations?type=districts&parentId=${selectedIds.provinceId}`)
-        .then((res) => {
-          setDistricts(res.data);
-          setSubDistricts([]);
-          setSelectedIds((prev) => ({
-            ...prev,
-            amphureId: "",
-            subDistrictId: "",
-          }));
-        });
+      axios.get(`/api/locations?type=districts&parentId=${selectedIds.provinceId}`)
+        .then((res) => setDistricts(res.data));
     }
   }, [selectedIds.provinceId]);
 
-  // Fetch Sub-districts when Amphure changes
   useEffect(() => {
-    if (selectedIds.amphureId) {
-      axios
-        .get(
-          `/api/locations?type=sub_districts&parentId=${selectedIds.amphureId}`,
-        )
-        .then((res) => {
-          setSubDistricts(res.data);
-          setSelectedIds((prev) => ({ ...prev, subDistrictId: "" }));
-        });
+    if (selectedIds.districtId) {
+      axios.get(`/api/locations?type=sub_districts&parentId=${selectedIds.districtId}`)
+        .then((res) => setSubDistricts(res.data));
     }
-  }, [selectedIds.amphureId]);
+  }, [selectedIds.districtId]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-
     if (type === "file") {
       setThumbnailFile(files[0]);
     } else {
@@ -89,72 +101,42 @@ const AttractionForm = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    setAlbumFiles(Array.from(e.target.files));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.table(formData);
-
-
-    if (!selectedIds.subDistrictId) {
-      alert("Please select a Province, District, and Sub-district.");
-      return;
-    }
-
     const data = new FormData();
-    data.append("name", formData.name);
+    data.append("id", id); // Send ID so backend knows WHICH record to update
+    data.append("method", "update"); // Flag for your SQL logic
+    
+    // Append text fields
+    Object.keys(formData).forEach(key => data.append(key, formData[key]));
     data.append("sub_district_id", selectedIds.subDistrictId);
     data.append("category_id", selectedCategoryId);
-    data.append("location", formData.location);
-    data.append("openHour", formData.openHour);
-    data.append("tel", formData.tel);
-    data.append("igUrl", formData.igUrl);
-    data.append("facebookUrl", formData.facebookURl);
-    data.append("tiktokUrl", formData.tiktokUrl);
-    data.append("googleMapsUrl", formData.googleMapsUrl);
-    data.append("description", formData.description);
-    data.append("thumbnailFile", thumbnailFile);
+
+    // Only append files if the user selected NEW ones
+    if (thumbnailFile) data.append("thumbnailFile", thumbnailFile);
     albumFiles.forEach((file) => data.append("albumFiles", file));
 
     try {
-      // 4. Send to the API
-      const response = await axios.post(
-        "/api/attractions/insertAttraction",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
+      const response = await axios.post("/api/attractions/insertAttraction", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      if (response.status === 201) {
-        alert("Success! Files saved to project and data saved to MySQL.");
-        setFormData({
-          name: "",
-          location: "",
-          openHour: "",
-          tel: "",
-          ig: "",
-          facebook: "",
-          tiktokUrl: "",
-          googleMapsUrl: "",
-          description: "",
-        });
-        setThumbnailFile(null);
-        setAlbumFiles([]);
-        setSelectedIds({ provinceId: "", amphureId: "", subDistrictId: "" });
-        setSelectedCategoryId("");
+      if (response.status === 200 || response.status === 201) {
+        alert("Success! Attraction updated in MySQL.");
+        router.push("/admin/attractions"); // Redirect back to management table
       }
     } catch (error) {
-      console.error("❌ Full Error Object:", error.response?.data);
-
-      // 2. Extract the specific message we defined in the backend
-      const sqlMessage = error.response?.data?.message || "Unknown SQL Error";
-      const sqlCode = error.response?.data?.sqlCode || "No Code";
+      console.error("Update failed:", error);
+      alert("Check console for error details.");
     }
   };
 
-  return (
+return (
     <div className="bg-secondary min-h-screen py-30 px-4">
       <div className="max-w-5xl mx-auto">
         <h2 className="text-2xl font-serif text-primary">Add New Attraction</h2>
@@ -211,6 +193,7 @@ const AttractionForm = () => {
               <label className="opacity-60">Province</label>
               <select
                 className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+                value={selectedIds.provinceId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
                     ...prev,
@@ -233,10 +216,11 @@ const AttractionForm = () => {
               <select
                 disabled={!districts.length}
                 className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                value={selectedIds.districtId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
                     ...prev,
-                    amphureId: e.target.value,
+                    districtId: e.target.value,
                   }))
                 }
               >
@@ -255,6 +239,7 @@ const AttractionForm = () => {
               <select
                 disabled={!subDistricts.length}
                 className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                value={selectedIds.subDistrictId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
                     ...prev,
@@ -302,7 +287,8 @@ const AttractionForm = () => {
                 type="text"
                 name="ig"
                 value={formData.igUrl}
-                onChange={(e) => setFormData({ ...formData, igUrl: e.target.value })} placeholder="instagram link"
+                onChange={handleChange}
+                placeholder="instagram link"
                 className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
               />
             </div>
@@ -312,7 +298,8 @@ const AttractionForm = () => {
                 type="text"
                 name="facebook"
                 value={formData.facebookUrl}
-                onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })} placeholder="facebook link"
+                onChange={handleChange}
+                placeholder="facebook link"
                 className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
               />
             </div>
@@ -322,7 +309,8 @@ const AttractionForm = () => {
                 type="text"
                 name="Tiktok"
                 value={formData.tiktokUrl}
-                onChange={(e) => setFormData({ ...formData, tiktokUrl: e.target.value })} placeholder="tiktok link"
+                onChange={handleChange}
+                placeholder="tiktok link"
                 className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
               />
             </div>
@@ -402,4 +390,4 @@ const AttractionForm = () => {
   );
 };
 
-export default AttractionForm;
+export default EditAttraction;

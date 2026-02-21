@@ -12,11 +12,11 @@ export async function GET(request) {
 
     if (type === 'provinces') {
       query = 'SELECT id, name_en FROM provinces ORDER BY name_en ASC';
-    } else if (type === 'amphures') {
-      query = 'SELECT id, name_en FROM amphures WHERE province_id = ? ORDER BY name_en ASC';
+    } else if (type === 'districts') {
+      query = 'SELECT id, name_en FROM districts WHERE province_id = ? ORDER BY name_en ASC';
       values = [parentId];
     } else if (type === 'sub_districts') {
-      query = 'SELECT id, name_en FROM sub_districts WHERE amphure_id = ? ORDER BY name_en ASC';
+      query = 'SELECT id, name_en FROM sub_districts WHERE district_id = ? ORDER BY name_en ASC';
       values = [parentId];
     }
 

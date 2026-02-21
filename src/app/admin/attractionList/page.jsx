@@ -10,7 +10,7 @@ const AttractionsTable = () => {
 
   const fetchAttractions = useCallback(async () => {
     try {
-      const res = await axios.get("/api/getAttractions");
+      const res = await axios.get("/api/attractions/getAttractions");
       setAttractions(res.data.data || []);
     } catch (error) {
       console.error("Attractions fetch failed", error);
@@ -27,7 +27,7 @@ const AttractionsTable = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this attraction?")) {
       try {
-        await axios.post("/api/attractions/deleteAttraction", { method: "delete", id });
+        await axios.delete(`/api/attractions/deleteAttraction?id=${id}`);
         alert("Deleted successfully!");
         fetchAttractions();
       } catch (err) {
@@ -37,8 +37,8 @@ const AttractionsTable = () => {
   };
 
   return (
-    <div className="bg-secondary min-h-screen py-10 px-8">
-      <div className="max-w-6xl mx-auto bg-white p-8 shadow-sm">
+    <div className="bg-secondary min-h-screen py-30 px-8">
+      <div className=" mx-auto">
         <h2 className="font-serif text-2xl  uppercase tracking-widest mb-4">
           Manage Attractions
         </h2>
@@ -59,12 +59,12 @@ const AttractionsTable = () => {
                   Geography
                 </th>
                 <th className="py-4 px-3 border border-secondary/20">
-                  GmapsUrl
-                </th>
-                <th className="py-4 px-3 border border-secondary/20">
                   Open Hour
                 </th>
                 <th className="py-4 px-3 border border-secondary/20">Tel</th>
+                <th className="py-4 px-3 border border-secondary/20">
+                  Gmaps Url
+                </th>
                 <th className="py-4 px-3 border border-secondary/20 text-center">
                   IG
                 </th>
@@ -89,24 +89,21 @@ const AttractionsTable = () => {
                   className="hover:bg-primary/5 transition-colors"
                 >
                   {/* Added 'border border-primary/20' to every data cell */}
-                  <td className="py-4 px-3 border border-primary/20 font-medium text-center">
-                    {spot.id}
-                  </td>
-                  <td className="py-4 px-3 border border-solid border-primary/20 font-bold text-center">
-                    {spot.name}
-                  </td>
-                  <td className="py-4 px-3 border border-primary/20 text-[9px] leading-relaxed text-center">
+                  <td className="py-4 px-3 text-left">{spot.id}</td>
+                  <td className="py-4 px-3 text-left">{spot.name}</td>
+                  <td className="py-4 px-3 text-left">
                     {spot.sub_district}, {spot.district}, <br /> {spot.province}
                   </td>
-                  <td className="py-4 px-3 border border-primary/20 text-center">
-                    {spot.geography}
-                  </td>
-                  <td className="py-4 px-3 border border-primary/20 text-center">
+                  <td className="py-4 px-3 text-left">{spot.geography}</td>
+
+                  <td className="py-4 px-3 text-left">{spot.open_hour}</td>
+                  <td className="py-4 px-3 text-left">{spot.tel}</td>
+                  <td className="py-4 px-3 text-left">
                     {spot.gmapsUrl ? (
                       <a
                         href={spot.gmapsUrl}
                         target="_blank"
-                        className="text-pink-600 hover:opacity-70"
+                        className="text-pink-600 hover:opacity-70 underline"
                       >
                         gmaps
                       </a>
@@ -114,14 +111,7 @@ const AttractionsTable = () => {
                       <span className="opacity-20">-</span>
                     )}
                   </td>
-                  <td className="py-4 px-3 border border-primary/20 text-center">
-                    {spot.open_hour}
-                  </td>
-                  <td className="py-4 px-3 border border-primary/20 text-center">
-                    {spot.tel}
-                  </td>
-
-                  <td className="py-4 px-3 border border-primary/20 text-center">
+                  <td className="py-4 px-3 text-left">
                     {spot.igUrl ? (
                       <a
                         href={spot.igUrl}
@@ -134,7 +124,7 @@ const AttractionsTable = () => {
                       <span className="opacity-20">-</span>
                     )}
                   </td>
-                  <td className="py-4 px-3 border border-primary/20 text-center">
+                  <td className="py-4 px-3 text-left">
                     {spot.facebookUrl ? (
                       <a
                         href={spot.facebookUrl}
@@ -147,7 +137,7 @@ const AttractionsTable = () => {
                       <span className="opacity-20">-</span>
                     )}
                   </td>
-                  <td className="py-4 px-3 border border-primary/20 text-center">
+                  <td className="py-4 px-3 text-left">
                     {spot.tiktokUrl ? (
                       <a
                         href={spot.tiktokUrl}
@@ -161,14 +151,12 @@ const AttractionsTable = () => {
                     )}
                   </td>
 
-                  <td className="py-4 px-3 border border-primary/20 text-center">
-                    {spot.category}
-                  </td>
+                  <td className="py-4 px-3 text-left">{spot.category}</td>
 
-                  <td className="py-4 border border-primary/20 text-center">
+                  <td className="py-4 px-3 text-left">
                     <button
                       onClick={() =>
-                        (window.location.href = `/admin/edit/${spot.id}`)
+                        (window.location.href = `/admin/editAttraction/${spot.id}`)
                       }
                       className="text-blue-600 hover:underline px-3"
                     >

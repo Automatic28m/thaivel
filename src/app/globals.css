@@ -9,3 +9,19 @@
   --font-serif: "Instrument Serif", serif;
   --font-display: "Sarabun", sans-serif;
 }
+
+@layer base {
+  /* Force all inputs to have a solid bottom border */
+  input, select, textarea {
+    /* border-bottom: 2px solid var(--color-primary) !important; */
+    border-top: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  /* Force the table grid to show up */
+  table, th, td {
+    border: 1px solid var(--color-primary) !important;
+    border-style: solid !important;
+  }
+}

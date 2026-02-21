@@ -7,7 +7,7 @@ export async function POST(request) {
   const connection = await pool.getConnection();
   try {
     const formData = await request.formData();
-    
+
     // Extract text fields
     const name = formData.get('name');
     const sub_district_id = formData.get('sub_district_id');
@@ -57,12 +57,12 @@ export async function POST(request) {
     // 4. Save Album Photos to Disk and DB
     if (albumFiles && albumFiles.length > 0) {
       const photoEntries = [];
-      
+
       for (let i = 0; i < albumFiles.length; i++) {
         const file = albumFiles[i];
         const buffer = Buffer.from(await file.arrayBuffer());
         const filePath = `/images/attractions/${namePrefix}-${i + 1}.jpg`;
-        
+
         fs.writeFileSync(path.join(process.cwd(), 'public', filePath), buffer);
         photoEntries.push([attractionId, filePath]);
       }
@@ -77,9 +77,9 @@ export async function POST(request) {
     return NextResponse.json({ success: true, id: attractionId }, { status: 201 });
 
   } catch (error) {
-    await connection.rollback();
-    console.error(`Upload Error:`, error.message);
-    return NextResponse.json({ error: `Server Error: ${error.message}` }, { status: 500 });
+    if (connection) await connection.rollback();
+    console.error(`🔥 SQL Error:`, error.sqlMessage || error.message); // Direct SQL log
+    return NextResponse.json({ error: "SQL Failure", message: error.sqlMessage || error.message }, { status: 500 });
   } finally {
     connection.release();
   }

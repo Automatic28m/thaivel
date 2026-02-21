@@ -21,7 +21,7 @@ export async function DELETE(request) {
         );
 
         const [photos] = await connection.execute(
-            `SELECT file_path FROM attraction_photos WHERE id = ?`, 
+            `SELECT file_path FROM attraction_photos WHERE attraction_id = ?`, 
             [attractionId]
         );
 
