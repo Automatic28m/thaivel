@@ -6,10 +6,10 @@ export async function GET(request) {
 
     try {
         const { searchParams } = new URL(request.url);
-        const attractionId = searchParams.get('id');
+        const regionId = searchParams.get('id');
 
-        if (!attractionId) {
-            return NextResponse.json({ error: "Attraction ID is required" }, { status: 400 });
+        if (!regionId) {
+            return NextResponse.json({ error: "Region ID is required" }, { status: 400 });
         }
 
         const [result] = await connection.execute(
@@ -24,8 +24,8 @@ export async function GET(request) {
             LEFT JOIN amphures am ON s.amphure_id = am.id
             LEFT JOIN provinces p ON am.province_id = p.id
             LEFT JOIN geographies g ON p.geography_id = g.id
-            WHERE a.id = ?;`,
-            [attractionId]
+            WHERE g.id = ?;`,
+            [regionId]
         );
 
         if (result.length === 0) {
@@ -35,7 +35,7 @@ export async function GET(request) {
         return NextResponse.json({ success: true, data: result[0] }, { status: 200 });
         
     } catch (error) {
-        console.error('Get attraction by id error:', error.message);
+        console.error('Get attraction by region id fetch Error:', error.message);
         return NextResponse.json({ error: `MySQL Error: ${error.message}` }, { status: 500 });
     } finally {
         connection.release();
