@@ -13,6 +13,8 @@ export async function POST(request) {
     const sub_district_id = formData.get('sub_district_id');
     const category_id = formData.get('category_id');
     const location = formData.get('location');
+    const lat = formData.get('lat');
+    const lon = formData.get('lon');
     const openHour = formData.get('openHour');
     const tel = formData.get('tel');
     const igUrl = formData.get('igUrl');
@@ -46,10 +48,10 @@ export async function POST(request) {
     // 3. Insert Main Attraction Data
     const [result] = await connection.execute(
       `INSERT INTO attractions (
-            name, sub_district_id, category_id, location, open_hour, 
+            name, sub_district_id, category_id, location, lat, lon, open_hour, 
             tel, igUrl, facebookUrl, tiktokUrl, google_maps_url, description, thumbnail
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, sub_district_id, category_id, location, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath]
+      [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath]
     );
 
     const attractionId = result.insertId;

@@ -129,7 +129,7 @@ export default function Home() {
               WONDERFUL PLACES CLOSE TO BANGKOK
             </span>
           </div>
-          <AttractionGrid attractions={closeBangkokAttractions}/>
+          {/* <AttractionGrid attractions={closeBangkokAttractions}/> */}
         </div>
       </section>
 

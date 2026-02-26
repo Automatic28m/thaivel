@@ -7,13 +7,15 @@ export async function POST(request) {
   const connection = await pool.getConnection();
   try {
     const formData = await request.formData();
-    
+
     // 1. Must capture the ID for the WHERE clause
-    const id = formData.get('id'); 
+    const id = formData.get('id');
     const name = formData.get('name');
     const sub_district_id = formData.get('sub_district_id');
     const category_id = formData.get('category_id');
     const location = formData.get('location');
+    const lat = formData.get('lat');
+    const lon = formData.get('lon');
     const openHour = formData.get('openHour');
     const tel = formData.get('tel');
     const igUrl = formData.get('igUrl');
@@ -52,42 +54,51 @@ export async function POST(request) {
     // 4. Update Main Attraction Data
     await connection.execute(
       `UPDATE attractions SET 
-            name = ?, sub_district_id = ?, category_id = ?, location = ?, 
+            name = ?, sub_district_id = ?, category_id = ?, location = ?, lat = ?, lon = ?,
             open_hour = ?, tel = ?, igUrl = ?, facebookUrl = ?, 
             tiktokUrl = ?, google_maps_url = ?, description = ?, thumbnail = ?
        WHERE id = ?`,
-      [name, sub_district_id, category_id, location, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath, id]
+      [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath, id]
     );
 
     // 5. Handle Album Updates
     if (albumFiles && albumFiles.length > 0 && typeof albumFiles[0] !== 'string') {
-        // Option A: Clear old album photos and replace (Simpler)
-        const [oldPhotos] = await connection.execute(`SELECT file_path FROM attraction_photos WHERE attraction_id = ?`, [id]);
-        oldPhotos.forEach(p => {
-            const pPath = path.join(process.cwd(), 'public', p.file_path);
-            if (fs.existsSync(pPath)) fs.unlinkSync(pPath);
-        });
-        await connection.execute(`DELETE FROM attraction_photos WHERE attraction_id = ?`, [id]);
+      // Option A: Clear old album photos and replace (Simpler)
+      const [oldPhotos] = await connection.execute(`SELECT file_path FROM attraction_photos WHERE attraction_id = ?`, [id]);
+      oldPhotos.forEach(p => {
+        const pPath = path.join(process.cwd(), 'public', p.file_path);
+        if (fs.existsSync(pPath)) fs.unlinkSync(pPath);
+      });
+      await connection.execute(`DELETE FROM attraction_photos WHERE attraction_id = ?`, [id]);
 
-        const photoEntries = [];
-        for (let i = 0; i < albumFiles.length; i++) {
-            const file = albumFiles[i];
-            const buffer = Buffer.from(await file.arrayBuffer());
-            const filePath = `/images/attractions/${namePrefix}-${i + 1}.jpg`;
-            fs.writeFileSync(path.join(process.cwd(), 'public', filePath), buffer);
-            photoEntries.push([id, filePath]);
-        }
-        await connection.query('INSERT INTO attraction_photos (attraction_id, file_path) VALUES ?', [photoEntries]);
+      const photoEntries = [];
+      for (let i = 0; i < albumFiles.length; i++) {
+        const file = albumFiles[i];
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const filePath = `/images/attractions/${namePrefix}-${i + 1}.jpg`;
+        fs.writeFileSync(path.join(process.cwd(), 'public', filePath), buffer);
+        photoEntries.push([id, filePath]);
+      }
+      await connection.query('INSERT INTO attraction_photos (attraction_id, file_path) VALUES ?', [photoEntries]);
     }
 
     await connection.commit();
     return NextResponse.json({ success: true, message: "Updated successfully" }, { status: 200 });
 
   } catch (error) {
-    await connection.rollback();
-    console.error(`Update Error:`, error.message);
-    return NextResponse.json({ error: `Server Error: ${error.message}` }, { status: 500 });
+    if (connection) await connection.rollback();
+
+    // 1. Log the specific SQL message to your terminal
+    console.error(`🔥 MySQL Error (${error.code}):`, error.sqlMessage || error.message);
+
+    // 2. Return the exact structure your frontend Axios catch block is expecting
+    return NextResponse.json({
+      error: "Database Update Failed",
+      message: error.sqlMessage || error.message,
+      sqlCode: error.code || "UNKNOWN_ERROR"
+    }, { status: 500 });
+
   } finally {
-    connection.release();
+    if (connection) connection.release();
   }
 }

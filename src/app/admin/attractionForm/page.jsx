@@ -4,9 +4,11 @@ import HorizontalRule from "../../components/HorizontalRule";
 import axios from "axios";
 
 const AttractionForm = () => {
+  // 1. Replaced separate lat/lon with a single coordinates string
   const [formData, setFormData] = useState({
     name: "",
     location: "",
+    coordinates: "", // New single field for "lat, lon"
     openHour: "",
     tel: "",
     igUrl: "",
@@ -65,7 +67,6 @@ const AttractionForm = () => {
     }
   }, [selectedIds.provinceId]);
 
-  // Fetch Sub-districts when Amphure changes
   useEffect(() => {
     if (selectedIds.amphureId) {
       axios
@@ -94,10 +95,26 @@ const AttractionForm = () => {
 
     console.table(formData);
 
-
     if (!selectedIds.subDistrictId) {
       alert("Please select a Province, District, and Sub-district.");
       return;
+    }
+
+    // 2. Logic to separate coordinates string into lat and lon
+    let finalLat = "";
+    let finalLon = "";
+
+    if (formData.coordinates) {
+      const parts = formData.coordinates.split(',').map(part => part.trim());
+
+      if (parts.length === 2) {
+        // Convert to a number, force it to 8 decimal places, then back to a string for FormData
+        finalLat = parseFloat(parts[0]).toFixed(8);
+        finalLon = parseFloat(parts[1]).toFixed(8);
+      } else {
+        alert("Invalid coordinate format. Please use 'Latitude, Longitude' (e.g., 14.0225, 100.5352)");
+        return;
+      }
     }
 
     const data = new FormData();
@@ -105,10 +122,15 @@ const AttractionForm = () => {
     data.append("sub_district_id", selectedIds.subDistrictId);
     data.append("category_id", selectedCategoryId);
     data.append("location", formData.location);
+
+    // 3. Append the separated lat and lon to the payload
+    data.append("lat", finalLat);
+    data.append("lon", finalLon);
+
     data.append("openHour", formData.openHour);
     data.append("tel", formData.tel);
     data.append("igUrl", formData.igUrl);
-    data.append("facebookUrl", formData.facebookURl);
+    data.append("facebookUrl", formData.facebookUrl);
     data.append("tiktokUrl", formData.tiktokUrl);
     data.append("googleMapsUrl", formData.googleMapsUrl);
     data.append("description", formData.description);
@@ -116,7 +138,6 @@ const AttractionForm = () => {
     albumFiles.forEach((file) => data.append("albumFiles", file));
 
     try {
-      // 4. Send to the API
       const response = await axios.post(
         "/api/attractions/insertAttraction",
         data,
@@ -132,10 +153,11 @@ const AttractionForm = () => {
         setFormData({
           name: "",
           location: "",
+          coordinates: "", // Reset coordinates string
           openHour: "",
           tel: "",
-          ig: "",
-          facebook: "",
+          igUrl: "",
+          facebookUrl: "",
           tiktokUrl: "",
           googleMapsUrl: "",
           description: "",
@@ -147,10 +169,9 @@ const AttractionForm = () => {
       }
     } catch (error) {
       console.error("❌ Full Error Object:", error.response?.data);
-
-      // 2. Extract the specific message we defined in the backend
       const sqlMessage = error.response?.data?.message || "Unknown SQL Error";
       const sqlCode = error.response?.data?.sqlCode || "No Code";
+      alert(`Error: ${sqlMessage}`);
     }
   };
 
@@ -171,7 +192,7 @@ const AttractionForm = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. BAAN THONG KRUB"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
               />
             </div>
           </div>
@@ -179,7 +200,7 @@ const AttractionForm = () => {
           <div className="flex flex-col space-y-2">
             <label className="opacity-60">Category</label>
             <select
-              className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value)}
               required
@@ -194,15 +215,30 @@ const AttractionForm = () => {
           </div>
 
           <div className="flex flex-col space-y-2">
-            <label className="opacity-60">Location</label>
+            <label className="opacity-60">Location Details</label>
             <input
               type="text"
               name="location"
               value={formData.location}
               onChange={handleChange}
-              placeholder=""
-              className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+              placeholder="e.g. 123 River Road"
+              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
             />
+          </div>
+
+          {/* 4. Unified Coordinates Row */}
+          <div className="grid grid-cols-1 gap-6">
+            <div className="flex flex-col space-y-2">
+              <label className="opacity-60">Map Coordinates (Lat, Lon)</label>
+              <input
+                type="text"
+                name="coordinates"
+                value={formData.coordinates}
+                onChange={handleChange}
+                placeholder="e.g. 14.022540, 100.535216"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -210,7 +246,8 @@ const AttractionForm = () => {
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Province</label>
               <select
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
+                value={selectedIds.provinceId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
                     ...prev,
@@ -232,7 +269,8 @@ const AttractionForm = () => {
               <label className="opacity-60">District (Amphure)</label>
               <select
                 disabled={!districts.length}
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
+                value={selectedIds.amphureId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
                     ...prev,
@@ -254,7 +292,8 @@ const AttractionForm = () => {
               <label className="opacity-60">Sub-District (Tambon)</label>
               <select
                 disabled={!subDistricts.length}
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
+                value={selectedIds.subDistrictId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
                     ...prev,
@@ -282,7 +321,7 @@ const AttractionForm = () => {
                 value={formData.openHour}
                 onChange={handleChange}
                 placeholder="e.g. wed-sun 10:00-17:00"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -293,37 +332,40 @@ const AttractionForm = () => {
                 value={formData.tel}
                 onChange={handleChange}
                 placeholder="062XXXXXXX"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Instagram</label>
               <input
                 type="text"
-                name="ig"
+                name="igUrl"
                 value={formData.igUrl}
-                onChange={(e) => setFormData({ ...formData, igUrl: e.target.value })} placeholder="instagram link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                onChange={handleChange}
+                placeholder="instagram link"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Facebook</label>
               <input
                 type="text"
-                name="facebook"
+                name="facebookUrl"
                 value={formData.facebookUrl}
-                onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })} placeholder="facebook link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                onChange={handleChange}
+                placeholder="facebook link"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Tiktok</label>
               <input
                 type="text"
-                name="Tiktok"
+                name="tiktokUrl"
                 value={formData.tiktokUrl}
-                onChange={(e) => setFormData({ ...formData, tiktokUrl: e.target.value })} placeholder="tiktok link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                onChange={handleChange}
+                placeholder="tiktok link"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -334,7 +376,7 @@ const AttractionForm = () => {
                 value={formData.googleMapsUrl}
                 onChange={handleChange}
                 placeholder="google maps link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
           </div>
@@ -350,7 +392,7 @@ const AttractionForm = () => {
               onChange={handleChange}
               rows="6"
               placeholder="Describe the serene atmosphere and slow-life ambiance..."
-              className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
             />
           </div>
 
@@ -362,7 +404,7 @@ const AttractionForm = () => {
               type="file"
               accept="image/*"
               onChange={handleChange}
-              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
+              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
             />
             <p className="text-[10px] opacity-40">
               {thumbnailFile ? (
@@ -382,7 +424,7 @@ const AttractionForm = () => {
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
+              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
             />
             <p className="text-[10px] opacity-40">
               {albumFiles.length} photos selected. These will be linked to your
@@ -392,7 +434,7 @@ const AttractionForm = () => {
 
           <button
             type="submit"
-            className="w-full md:w-fit px-12 py-4 border-3 border-primary text-primary  uppercase text-lg hover:bg-primary hover:text-secondary transition-all active:scale-95"
+            className="w-full md:w-fit px-12 py-4 border-3 border-primary text-primary uppercase text-lg hover:bg-primary hover:text-secondary transition-all active:scale-95"
           >
             Save Attraction
           </button>

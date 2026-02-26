@@ -2,16 +2,17 @@
 import React, { useState, useEffect } from "react";
 import HorizontalRule from "../../../components/HorizontalRule";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation"; // Added for routing
+import { useParams, useRouter } from "next/navigation";
 
 const EditAttraction = () => {
-  const { id } = useParams(); // Get ID from URL
+  const { id } = useParams();
   const router = useRouter();
   console.log("Current Attraction ID from URL:", id);
 
   const [formData, setFormData] = useState({
     name: "",
     location: "",
+    coordinates: "",
     openHour: "",
     tel: "",
     igUrl: "",
@@ -23,7 +24,7 @@ const EditAttraction = () => {
 
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [albumFiles, setAlbumFiles] = useState([]);
-  
+
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [subDistricts, setSubDistricts] = useState([]);
@@ -36,23 +37,25 @@ const EditAttraction = () => {
   });
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
-  // 1. Fetch Categories & Provinces (Same as AttractionForm)
   useEffect(() => {
     axios.get("/api/getCategories").then((res) => setCategories(res.data));
     axios.get("/api/locations?type=provinces").then((res) => setProvinces(res.data));
   }, []);
 
-  // 2. NEW: Fetch existing data for editing
   useEffect(() => {
     if (!id) return;
-    
+
     axios.get(`/api/attractions/getAttractionById?id=${id}`)
       .then((res) => {
-        const attraction = res.data.data; // Targeting the object from your SQL result
-        
+        const attraction = res.data.data;
+        const lat = attraction.latitude || attraction.lat || "";
+        const lon = attraction.longitude || attraction.lon || "";
+        const combinedCoords = (lat && lon) ? `${lat}, ${lon}` : "";
+
         setFormData({
           name: attraction.name || "",
           location: attraction.location || "",
+          coordinates: combinedCoords,
           openHour: attraction.open_hour || "",
           tel: attraction.tel || "",
           igUrl: attraction.igUrl || "",
@@ -63,21 +66,19 @@ const EditAttraction = () => {
         });
 
         setSelectedCategoryId(attraction.category_id || "");
-        
-        // Setting the province ID triggers the cascade effects below
+
         setSelectedIds({
-          provinceId: attraction.province_id,
-          districtId: attraction.district_id,
-          subDistrictId: attraction.sub_district_id,
+          provinceId: attraction.province_id || "",
+          districtId: attraction.district_id || "",
+          subDistrictId: attraction.sub_district_id || "",
         });
       });
   }, [id]);
 
   useEffect(() => {
     console.table(formData);
-  })
+  }, [formData]);
 
-  // 3. Location Cascades (District & Sub-district logic remains identical)
   useEffect(() => {
     if (selectedIds.provinceId) {
       axios.get(`/api/locations?type=districts&parentId=${selectedIds.provinceId}`)
@@ -108,38 +109,63 @@ const EditAttraction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let finalLat = "";
+    let finalLon = "";
+
+    if (formData.coordinates) {
+      const parts = formData.coordinates.split(',').map(part => part.trim());
+
+      if (parts.length === 2) {
+        finalLat = parseFloat(parts[0]).toFixed(8);
+        finalLon = parseFloat(parts[1]).toFixed(8);
+      } else {
+        alert("Invalid coordinate format. Please use 'Latitude, Longitude' (e.g., 14.0225, 100.5352)");
+        return;
+      }
+    }
+
     const data = new FormData();
-    data.append("id", id); // Send ID so backend knows WHICH record to update
-    data.append("method", "update"); // Flag for your SQL logic
-    
-    // Append text fields
-    Object.keys(formData).forEach(key => data.append(key, formData[key]));
+    data.append("id", id);
+    data.append("method", "update");
+
+    data.append("name", formData.name);
+    data.append("location", formData.location);
+    data.append("lat", finalLat);
+    data.append("lon", finalLon);
+    data.append("openHour", formData.openHour);
+    data.append("tel", formData.tel);
+    data.append("igUrl", formData.igUrl);
+    data.append("facebookUrl", formData.facebookUrl);
+    data.append("tiktokUrl", formData.tiktokUrl);
+    data.append("googleMapsUrl", formData.googleMapsUrl);
+    data.append("description", formData.description);
+
     data.append("sub_district_id", selectedIds.subDistrictId);
     data.append("category_id", selectedCategoryId);
 
-    // Only append files if the user selected NEW ones
     if (thumbnailFile) data.append("thumbnailFile", thumbnailFile);
     albumFiles.forEach((file) => data.append("albumFiles", file));
 
     try {
-      const response = await axios.post("/api/attractions/insertAttraction", data, {
+      const response = await axios.post("/api/attractions/updateAttraction", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.status === 200 || response.status === 201) {
         alert("Success! Attraction updated in MySQL.");
-        router.push("/admin/attractions"); // Redirect back to management table
+        router.push("/admin/attractions");
       }
     } catch (error) {
+      const sqlMessage = error.response?.data?.message || "Unknown SQL Error";
       console.error("Update failed:", error);
-      alert("Check console for error details.");
+      alert(`Update Error: ${sqlMessage}`);
     }
   };
 
-return (
+  return (
     <div className="bg-secondary min-h-screen py-30 px-4">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl font-serif text-primary">Add New Attraction</h2>
+        <h2 className="text-2xl font-serif text-primary">Edit Attraction</h2>
         <HorizontalRule borderColor="border-primary" />
 
         <form onSubmit={handleSubmit} className="mt-10 space-y-6 uppercase">
@@ -153,7 +179,7 @@ return (
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. BAAN THONG KRUB"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
               />
             </div>
           </div>
@@ -161,7 +187,7 @@ return (
           <div className="flex flex-col space-y-2">
             <label className="opacity-60">Category</label>
             <select
-              className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value)}
               required
@@ -182,9 +208,24 @@ return (
               name="location"
               value={formData.location}
               onChange={handleChange}
-              placeholder=""
-              className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+              placeholder="e.g. 123 River Road"
+              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
             />
+          </div>
+
+          {/* 4. Unified Coordinates Row */}
+          <div className="grid grid-cols-1 gap-6">
+            <div className="flex flex-col space-y-2">
+              <label className="opacity-60">Map Coordinates (Lat, Lon)</label>
+              <input
+                type="text"
+                name="coordinates"
+                value={formData.coordinates}
+                onChange={handleChange}
+                placeholder="e.g. 14.022540, 100.535216"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -192,7 +233,7 @@ return (
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Province</label>
               <select
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase"
                 value={selectedIds.provinceId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
@@ -215,7 +256,7 @@ return (
               <label className="opacity-60">District (Amphure)</label>
               <select
                 disabled={!districts.length}
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
                 value={selectedIds.districtId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
@@ -238,7 +279,7 @@ return (
               <label className="opacity-60">Sub-District (Tambon)</label>
               <select
                 disabled={!subDistricts.length}
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
                 value={selectedIds.subDistrictId}
                 onChange={(e) =>
                   setSelectedIds((prev) => ({
@@ -267,7 +308,7 @@ return (
                 value={formData.openHour}
                 onChange={handleChange}
                 placeholder="e.g. wed-sun 10:00-17:00"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -278,40 +319,40 @@ return (
                 value={formData.tel}
                 onChange={handleChange}
                 placeholder="062XXXXXXX"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Instagram</label>
               <input
                 type="text"
-                name="ig"
+                name="igUrl"
                 value={formData.igUrl}
                 onChange={handleChange}
                 placeholder="instagram link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Facebook</label>
               <input
                 type="text"
-                name="facebook"
+                name="facebookUrl"
                 value={formData.facebookUrl}
                 onChange={handleChange}
                 placeholder="facebook link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
               <label className="opacity-60">Tiktok</label>
               <input
                 type="text"
-                name="Tiktok"
+                name="tiktokUrl"
                 value={formData.tiktokUrl}
                 onChange={handleChange}
                 placeholder="tiktok link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -322,7 +363,7 @@ return (
                 value={formData.googleMapsUrl}
                 onChange={handleChange}
                 placeholder="google maps link"
-                className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+                className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
               />
             </div>
           </div>
@@ -338,7 +379,7 @@ return (
               onChange={handleChange}
               rows="6"
               placeholder="Describe the serene atmosphere and slow-life ambiance..."
-              className="bg-transparen border-primary p-2 outline-solid text-primary  uppercase disabled:opacity-30"
+              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
             />
           </div>
 
@@ -350,7 +391,7 @@ return (
               type="file"
               accept="image/*"
               onChange={handleChange}
-              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
+              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
             />
             <p className="text-[10px] opacity-40">
               {thumbnailFile ? (
@@ -370,7 +411,7 @@ return (
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
+              className="bg-transparent border-2 border-dashed border-primary/20 p-8 text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-primary file:text-secondary hover:file:bg-primary/80 cursor-pointer"
             />
             <p className="text-[10px] opacity-40">
               {albumFiles.length} photos selected. These will be linked to your
@@ -380,7 +421,7 @@ return (
 
           <button
             type="submit"
-            className="w-full md:w-fit px-12 py-4 border-3 border-primary text-primary  uppercase text-lg hover:bg-primary hover:text-secondary transition-all active:scale-95"
+            className="w-full md:w-fit px-12 py-4 border-3 border-primary text-primary uppercase text-lg hover:bg-primary hover:text-secondary transition-all active:scale-95"
           >
             Save Attraction
           </button>
