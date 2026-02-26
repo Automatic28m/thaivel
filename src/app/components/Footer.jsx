@@ -11,21 +11,21 @@ export default function Footer() {
         {/* Main Footer Content */}
         <div className="flex flex-col gap-4 mb-10">
           <h2 className="font-serif text-3xl uppercase tracking-wider">
-            Thaivels
+            Thaivel
           </h2>
           <nav className="flex flex-col gap-2">
             <a
               href="/about"
               className="uppercase text-sm hover:opacity-80 transition-opacity"
             >
-              About Us
+              About
             </a>
-            <a
+            {/* <a
               href="/contact"
               className="uppercase text-sm hover:opacity-80 transition-opacity"
             >
               Contact
-            </a>
+            </a> */}
           </nav>
         </div>
 
@@ -34,7 +34,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex justify-between items-center text-xs uppercase tracking-widest">
-          <p>Copyright © Thaivels</p>
+          <p>Copyright © Thaivel</p>
           <button
             onClick={scrollToTop}
             className="flex items-center gap-1 hover:underline cursor-pointer"

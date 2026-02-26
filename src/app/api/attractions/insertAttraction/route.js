@@ -50,7 +50,7 @@ export async function POST(request) {
       `INSERT INTO attractions (
             name, sub_district_id, category_id, location, lat, lon, open_hour, 
             tel, igUrl, facebookUrl, tiktokUrl, google_maps_url, description, thumbnail
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath]
     );
 

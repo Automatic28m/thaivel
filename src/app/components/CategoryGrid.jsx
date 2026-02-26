@@ -39,7 +39,7 @@ export default function CategoryGrid() {
           key={cat.id}
           // 1. UPDATED ROUTE: Point directly to our new filter page logic!
           href={`/attractions?category=${cat.id}&search=&page=1`}
-          className="aspect-square w-full col-span-6 md:col-span-4 relative flex flex-col justify-end p-3 md:p-6 overflow-hidden group shadow-lg"
+          className="aspect-square w-full col-span-6 md:col-span-4 relative flex flex-col justify-end p-3 md:p-6 overflow-hidden group shadow-lg rounded"
         >
           {cat.thumbnail ? (
             <Image

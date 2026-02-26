@@ -4,27 +4,28 @@ import HorizontalRule from "./components/HorizontalRule";
 import CategoryGrid from "./components/CategoryGrid";
 import AttractionGrid from "./components/AttractionGrid";
 import RegionGrid from "./components/RegionGrid";
+import { EmblaCarousel } from "./components/Carousel";
 
 const closeBangkokAttractions = [
-    {
-      id: "baan-thong-krub",
-      name: "Baan Thong Krub",
-      location: "Pathum Thani",
-      src: "/images/urbanThumbnail.jpeg"
-    },
-    {
-      id: "song-wat",
-      name: "Song Wat",
-      location: "Bangkok",
-      src: "/images/urbanThumbnail.jpeg"
-    },
-    {
-      id: "bangsean-fish-market",
-      name: "Bangsean Fish Market",
-      location: "Chonburi",
-      src: "/images/urbanThumbnail.jpeg"
-    }
-  ];
+  {
+    id: "baan-thong-krub",
+    name: "Baan Thong Krub",
+    location: "Pathum Thani",
+    src: "/images/urbanThumbnail.jpeg"
+  },
+  {
+    id: "song-wat",
+    name: "Song Wat",
+    location: "Bangkok",
+    src: "/images/urbanThumbnail.jpeg"
+  },
+  {
+    id: "bangsean-fish-market",
+    name: "Bangsean Fish Market",
+    location: "Chonburi",
+    src: "/images/urbanThumbnail.jpeg"
+  }
+];
 
 export default function Home() {
   return (
@@ -55,15 +56,22 @@ export default function Home() {
         </div>
       </section>
 
+      <EmblaCarousel />
+
       <section id="category" className="bg-secondary h-fit">
-        <div className="max-w-5xl px-3 m-auto py-30">
+        <div className="max-w-5xl px-3 m-auto pt-30 pb-10">
           <div className="">
             <span className="text-4xl md:text-6xl text-primary font-serif">
-              EXPLORE ATTRACTIONS IN THAIVELS
+              EXPLORE ATTRACTIONS IN THAIVEL
             </span>
           </div>
           <HorizontalRule borderColor="border-primary" />
           <CategoryGrid />
+        </div>
+      </section>
+
+      <section>
+        <div className="px-4 max-w-5xl m-auto py-30">
           <div className="pt-10">
             <span className="text-4xl md:text-6xl text-primary font-serif">
               A JOURNEY THROUGH 6 REGIONS
@@ -77,13 +85,13 @@ export default function Home() {
       <section id="about" className="h-fit bg-primary">
         <div className="max-w-5xl px-3 m-auto py-30">
           <span className="text-4xl md:text-6xl text-secondary uppercase font-serif">
-            ABOUT THAIVELS
+            ABOUT THAIVEL
           </span>
           <hr className="my-8 border-t-2 border-secondary" />
           <div className="grid grid-cols-12 md:gap-12 gap-3">
             <div id="message" className="md:col-span-6 col-span-12">
               <p className="font-serif text-secondary text-lg">
-                Welcome to Thaivels, your ultimate starting point for exploring
+                Welcome to Thaivel, your ultimate starting point for exploring
                 the breathtaking diversity of the Land of Smiles. If you’re
                 dreaming of a trip to Thailand but feel overwhelmed by the
                 endless possibilities, you’ve come to the right place.
@@ -111,13 +119,32 @@ export default function Home() {
                 locals know about.
                 <br />
                 <br />
-                At Thaivels, we believe that every traveler deserves to
+                At Thaivel, we believe that every traveler deserves to
                 experience the authentic charm and warmth of Thai hospitality.
                 Let us help you find where to begin your journey and uncover the
                 unique identity of each region.
               </p>
             </div>
-            <div id="image" className="md:col-span-6 col-span-12"></div>
+            <div id="image"
+              className="md:h-full col-span-12 md:col-span-6 relative w-full aspect-square md:aspect-video"
+            >
+              <Image
+                src="/images/watchai.jpg"
+                alt="watchai"
+                fill
+                className="object-contain"
+                priority={true}
+              />
+            </div>
+            <div className="col-span-12 md:col-span-4 flex justify-center">
+              {/* Added w-full and block to make the button fill the container */}
+              <Link
+                href="/about"
+                className="w-full block text-center uppercase text-secondary text-lg font-serif border-3 border-secondary py-3 hover:bg-secondary hover:text-primary transition-colors"
+              >
+                Learn more
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -107,11 +107,11 @@ function Attractions() {
 
 					{/* Region Selection Block (Dynamic) */}
 					<div className="mb-10">
-						<p className="text-primary/50 font-serif text-xs uppercase tracking-[0.3em] mb-4">Select Region</p>
+						<p className="text-primary font-serif text-xs uppercase tracking-[0.3em] mb-4">Select Region</p>
 						<div className="flex flex-wrap gap-x-8 gap-y-4">
 							<button
 								onClick={() => updateURL({ region: "all" })}
-								className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion === "all" ? "text-primary border-b-2 border-primary" : "text-primary/40 hover:text-primary"}`}
+								className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion === "all" ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
 							>
 								All Regions
 							</button>
@@ -119,7 +119,7 @@ function Attractions() {
 								<button
 									key={geo.id}
 									onClick={() => updateURL({ region: geo.name_eng })}
-									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion.toLowerCase() === geo.name_eng.toLowerCase() ? "text-primary border-b-2 border-primary" : "text-primary/40 hover:text-primary"}`}
+									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion.toLowerCase() === geo.name_eng.toLowerCase() ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
 								>
 									{geo.name_eng}
 								</button>
@@ -129,19 +129,19 @@ function Attractions() {
 
 					{/* Category Selection Block */}
 					<div className="pb-4 md:pb-10">
-						<p className="text-primary/50 font-serif text-xs uppercase tracking-[0.3em] mb-4">Select Category</p>
+						<p className="text-primary font-serif text-xs uppercase tracking-[0.3em] mb-4">Select Category</p>
 						<div className="flex flex-wrap gap-x-8 gap-y-4">
 							<button
 								onClick={() => updateURL({ category: "all" })}
-								className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === "all" ? "text-primary border-b-2 border-primary" : "text-primary/40 hover:text-primary"}`}
+								className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === "all" ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
 							>
-								All
+								All Category
 							</button>
 							{categories.map((cat) => (
 								<button
 									key={cat.id}
 									onClick={() => updateURL({ category: cat.id.toString() })}
-									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === cat.id.toString() ? "text-primary border-b-2 border-primary" : "text-primary/40 hover:text-primary"}`}
+									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === cat.id.toString() ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
 								>
 									{cat.name}
 								</button>

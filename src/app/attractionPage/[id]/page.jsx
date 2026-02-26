@@ -111,9 +111,9 @@ function AttractionPage() {
 								</div>
 							)}
 						</div>
-						<div className="col-span-12 md:col-span-6 relative min-h-[400px]">
+						<div className="col-span-12 md:col-span-6 relative h-[400px]">
 							<Image
-								src={attraction.thumbnail}
+								src={attraction.thumbnail || "/images/placeholder.jpg"}
 								alt={attraction.name}
 								fill
 								className="object-cover"
@@ -125,6 +125,7 @@ function AttractionPage() {
 					{/* Compact Grid Preview */}
 					{album.length > 0 && (
 						<div className="my-3 grid grid-cols-2 md:grid-cols-4 gap-4">
+							
 							{album.slice(0, 4).map((item, i) => (
 								<div
 									key={i}
@@ -170,7 +171,7 @@ function AttractionPage() {
 								Location Map
 							</h2>
 							<HorizontalRule borderColor="border-primary" />
-							<div className="h-[600px] w-full border border-primary">
+							<div className="h-[300px] w-full border border-primary">
 								{/* Center dynamically updates based on fetched coordinates (Format: [Lng, Lat]) */}
 								<Map center={[mapCoords.lng, mapCoords.lat]} zoom={14} >
 									<MapMarker
@@ -258,15 +259,13 @@ function AttractionPage() {
 								useBrowserFullscreen={false}
 								thumbnailPosition="bottom"
 								renderItem={(item) => (
-									<div className="flex justify-center items-center h-[55vh] md:h-[65vh]">
-										<div className="relative w-full h-full">
-											<Image
-												src={item.original}
-												alt="Gallery Image"
-												fill
-												className="object-contain"
-											/>
-										</div>
+									<div className="flex justify-center items-center h-[50vh] md:h-[70vh] ">
+										{/* Use standard img here to ensure it loads within the gallery wrapper */}
+										<img
+											src={item.original}
+											alt="Gallery Image"
+											className="max-h-full max-w-full object-contain mx-auto"
+										/>
 									</div>
 								)}
 							/>
