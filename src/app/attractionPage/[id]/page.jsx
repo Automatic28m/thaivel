@@ -12,6 +12,7 @@ import { faTiktok, faInstagram, faFacebook, faGoogle } from '@fortawesome/free-b
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Map, MapMarker, MarkerContent, MarkerPopup } from "@/components/ui/map";
 import { MapPin } from "lucide-react";
+import RecommendAttractions from "@/app/components/RecommendAttractions";
 
 function AttractionPage() {
 	const { id } = useParams();
@@ -125,7 +126,7 @@ function AttractionPage() {
 					{/* Compact Grid Preview */}
 					{album.length > 0 && (
 						<div className="my-3 grid grid-cols-2 md:grid-cols-4 gap-4">
-							
+
 							{album.slice(0, 4).map((item, i) => (
 								<div
 									key={i}
@@ -272,6 +273,8 @@ function AttractionPage() {
 						</div>
 					</div>
 				</div>
+
+				<RecommendAttractions />
 			</section>
 		</div>
 	);
