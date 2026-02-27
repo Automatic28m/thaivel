@@ -77,6 +77,9 @@ const AttractionsTable = () => {
                 <th className="py-4 px-3 border border-secondary/20">
                   Category
                 </th>
+                <th className="py-4 px-3 border border-secondary/20">
+                  Recommend
+                </th>
                 <th className="py-4 px-3 border border-secondary/20 text-right">
                   Actions
                 </th>
@@ -152,6 +155,7 @@ const AttractionsTable = () => {
                   </td>
 
                   <td className="py-4 px-3 text-left">{spot.category}</td>
+                  <td className="py-4 px-3 text-left">{spot.recommend}</td>
 
                   <td className="py-4 px-3 text-left">
                     <button

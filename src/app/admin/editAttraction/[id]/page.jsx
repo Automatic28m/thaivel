@@ -20,6 +20,7 @@ const EditAttraction = () => {
     tiktokUrl: "",
     googleMapsUrl: "",
     description: "",
+    recommend: false,
   });
 
   const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -63,6 +64,7 @@ const EditAttraction = () => {
           tiktokUrl: attraction.tiktokUrl || "",
           googleMapsUrl: attraction.google_maps_url || "",
           description: attraction.description || "",
+          recommend: attraction.recommend === 1,
         });
 
         setSelectedCategoryId(attraction.category_id || "");
@@ -94,9 +96,12 @@ const EditAttraction = () => {
   }, [selectedIds.districtId]);
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
+    const { name, value, type, files, checked } = e.target;
+
     if (type === "file") {
       setThumbnailFile(files[0]);
+    } else if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -142,6 +147,7 @@ const EditAttraction = () => {
 
     data.append("sub_district_id", selectedIds.subDistrictId);
     data.append("category_id", selectedCategoryId);
+    data.append("recommend", formData.recommend ? 1 : 0);
 
     if (thumbnailFile) data.append("thumbnailFile", thumbnailFile);
     albumFiles.forEach((file) => data.append("albumFiles", file));
@@ -417,6 +423,20 @@ const EditAttraction = () => {
               {albumFiles.length} photos selected. These will be linked to your
               local folder.
             </p>
+          </div>
+
+          <div className="flex items-center space-x-3 pt-2">
+            <input
+              type="checkbox"
+              name="recommend"
+              id="recommend"
+              checked={!!formData.recommend || false}
+              onChange={handleChange}
+              className="w-5 h-5 accent-primary border-primary rounded cursor-pointer"
+            />
+            <label htmlFor="recommend" className="cursor-pointer select-none">
+              Recommend this attraction on Homepage?
+            </label>
           </div>
 
           <button

@@ -23,6 +23,7 @@ export async function POST(request) {
     const tiktokUrl = formData.get('tiktokUrl');
     const googleMapsUrl = formData.get('googleMapsUrl');
     const description = formData.get('description');
+    const recommend = formData.get('recommend');
 
     const thumbnailFile = formData.get('thumbnailFile');
     const albumFiles = formData.getAll('albumFiles');
@@ -56,9 +57,9 @@ export async function POST(request) {
       `UPDATE attractions SET 
             name = ?, sub_district_id = ?, category_id = ?, location = ?, lat = ?, lon = ?,
             open_hour = ?, tel = ?, igUrl = ?, facebookUrl = ?, 
-            tiktokUrl = ?, google_maps_url = ?, description = ?, thumbnail = ?
+            tiktokUrl = ?, google_maps_url = ?, description = ?, thumbnail = ?, recommend = ?
        WHERE id = ?`,
-      [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath, id]
+      [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath, recommend, id]
     );
 
     // 5. Handle Album Updates

@@ -8,7 +8,7 @@ const AttractionForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     location: "",
-    coordinates: "", // New single field for "lat, lon"
+    coordinates: "",
     openHour: "",
     tel: "",
     igUrl: "",
@@ -16,6 +16,7 @@ const AttractionForm = () => {
     tiktokUrl: "",
     googleMapsUrl: "",
     description: "",
+    recommend: false,
   });
 
   const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -81,10 +82,12 @@ const AttractionForm = () => {
   }, [selectedIds.amphureId]);
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
+    const { name, value, type, files, checked } = e.target;
 
     if (type === "file") {
       setThumbnailFile(files[0]);
+    } else if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -135,6 +138,7 @@ const AttractionForm = () => {
     data.append("googleMapsUrl", formData.googleMapsUrl);
     data.append("description", formData.description);
     data.append("thumbnailFile", thumbnailFile);
+    data.append("recommend", formData.recommend ? 1 : 0);
     albumFiles.forEach((file) => data.append("albumFiles", file));
 
     try {
@@ -161,6 +165,7 @@ const AttractionForm = () => {
           tiktokUrl: "",
           googleMapsUrl: "",
           description: "",
+          recommend: false
         });
         setThumbnailFile(null);
         setAlbumFiles([]);
@@ -430,6 +435,20 @@ const AttractionForm = () => {
               {albumFiles.length} photos selected. These will be linked to your
               local folder.
             </p>
+          </div>
+
+          <div className="flex items-center space-x-3 pt-2">
+            <input
+              type="checkbox"
+              name="recommend"
+              id="recommend"
+              checked={formData.recommend}
+              onChange={handleChange}
+              className="w-5 h-5 accent-primary border-primary rounded cursor-pointer"
+            />
+            <label htmlFor="recommend" className="cursor-pointer select-none">
+              Recommend this attraction on Homepage?
+            </label>
           </div>
 
           <button

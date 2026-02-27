@@ -22,6 +22,7 @@ export async function POST(request) {
     const tiktokUrl = formData.get('tiktokUrl');
     const googleMapsUrl = formData.get('googleMapsUrl');
     const description = formData.get('description');
+    const recommend = formData.get('recommend');
 
     // Extract files
     const thumbnailFile = formData.get('thumbnailFile');
@@ -49,9 +50,9 @@ export async function POST(request) {
     const [result] = await connection.execute(
       `INSERT INTO attractions (
             name, sub_district_id, category_id, location, lat, lon, open_hour, 
-            tel, igUrl, facebookUrl, tiktokUrl, google_maps_url, description, thumbnail
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath]
+            tel, igUrl, facebookUrl, tiktokUrl, google_maps_url, description, thumbnail, recommend
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, sub_district_id, category_id, location, lat, lon, openHour, tel, igUrl, facebookUrl, tiktokUrl, googleMapsUrl, description, thumbnailPath, recommend]
     );
 
     const attractionId = result.insertId;
