@@ -10,6 +10,12 @@ import CarouselComponent from "./components/CarouselComponent";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import RecommendAttractions from "./components/RecommendAttractions";
+import { Effect } from "./components/animate/Effect";
+import { TypingText } from "@/components/animate-ui/primitives/texts/typing";
+import { Slides } from "@/components/animate-ui/primitives/effects/slide";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown, faTurnDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
 
@@ -29,22 +35,37 @@ export default function Home() {
 
                 <div className="absolute inset-0 bg-black/60" />
 
-                <div className="relative z-10 max-w-5xl px-6 py-25 m-auto h-full flex flex-col justify-center">
-                    <h1 className="text-secondary font-serif text-5xl md:text-6xl lg:text-9xl leading-tight uppercase">
-                        Experience the Vibrant Soul of Thailand
-                    </h1>
-                    <p className="text-xl md:text-2xl text-secondary font-serif py-10 max-w-2xl">
-                        From the serene grandeur of ancient temples to the sophisticated
-                        pulse of modern cafes and malls, discover a journey that resonates
-                        with every traveler.
-                    </p>
+                <div className="relative z-10 max-w-5xl px-6 m-auto min-h-screen flex flex-col justify-center">
+                    <Fade delay={200}>
+                        <span className="text-secondary font-serif text-5xl md:text-6xl lg:text-9xl leading-tight uppercase">
+                            Experience the Vibrant Soul of Thailand
+                        </span>
+                    </Fade>
+                    <Fade delay={500}>
+                        <p className="text-xl md:text-2xl text-secondary font-serif py-10 max-w-2xl">
+                            From the serene grandeur of ancient temples to the sophisticated
+                            pulse of modern cafes and malls, discover a journey that resonates
+                            with every traveler.
+                        </p>
+                    </Fade>
                 </div>
+                <Fade delay={1000} slide={{ direction: 'up', offset: 20 }}>
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+                        <span className="text-secondary font-serif text-sm uppercase">
+                            Scroll Down
+                        </span>
+                        <div className="text-secondary/80 animate-bounce">
+                            {/* Reusing the Hand icon or a standard Arrow */}
+                            <FontAwesomeIcon icon={faArrowDown} className="text-lg" />
+                        </div>
+                    </div>
+                </Fade>
             </section>
 
             <EmblaCarousel />
 
             <section id="category" className="bg-secondary h-fit">
-                <div className="max-w-5xl px-3 m-auto pt-30 pb-10">
+                <div className="max-w-5xl px-3 m-auto pt-30 pb-10 animate-fade-in scroll-reveal">
                     <div className="">
                         <span className="text-4xl md:text-6xl text-primary font-serif">
                             EXPLORE ATTRACTIONS IN THAIVEL
@@ -134,7 +155,9 @@ export default function Home() {
                 </div>
             </section>
 
-            <RecommendAttractions />
+            <Effect fade slide>
+                <RecommendAttractions />
+            </Effect>
 
             <section id="about" className="h-fit bg-primary">
                 <div className="max-w-5xl px-6 m-auto py-30">

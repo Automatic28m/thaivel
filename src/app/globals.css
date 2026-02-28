@@ -7,88 +7,194 @@
 
 /* === TAILWIND 4 THEME ENGINE === */
 @theme {
-  /* Your Core Brand Colors */
-  --color-primary: #543310;
-  --color-secondary: #f8f4e1;
-  
-  /* Typography */
-  --font-serif: "Instrument Serif", serif;
-  --font-display: "Sarabun", sans-serif;
 
-  /* Mapping Shadcn Variables to your Theme */
-  --color-background: var(--color-secondary);
-  --color-foreground: var(--color-primary);
-  --color-card: var(--color-secondary);
-  --color-card-foreground: var(--color-primary);
-  --color-popover: var(--color-secondary);
-  --color-popover-foreground: var(--color-primary);
-  --color-primary-foreground: var(--color-secondary);
-  --color-secondary-foreground: var(--color-primary);
-  --color-border: var(--color-primary);
-  --color-input: var(--color-primary);
-  --color-ring: var(--color-primary);
-  
-  /* Radii */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+    /* Tailwind Animation */
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes reveal-on-scroll {
+        from {
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Your Core Brand Colors */
+    --color-primary: #543310;
+    --color-secondary: #f8f4e1;
+
+    /* Typography */
+    --font-serif: "Instrument Serif",
+    serif;
+    --font-display: "Sarabun",
+    sans-serif;
+
+    /* Mapping Shadcn Variables to your Theme */
+    --color-background: var(--color-secondary);
+    --color-foreground: var(--color-primary);
+    --color-card: var(--color-secondary);
+    --color-card-foreground: var(--color-primary);
+    --color-popover: var(--color-secondary);
+    --color-popover-foreground: var(--color-primary);
+    --color-primary-foreground: var(--color-secondary);
+    --color-secondary-foreground: var(--color-primary);
+    --color-border: var(--color-primary);
+    --color-input: var(--color-primary);
+    --color-ring: var(--color-primary);
+
+    /* Radii */
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
 }
 
 @layer base {
-  /* 1. Resetting standard elements */
-  * {
-    border-color: var(--color-primary);
-    /* Standard CSS instead of @apply to prevent server crash */
-    outline-color: rgba(84, 51, 16, 0.5); 
-  }
-  
-  body {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    font-family: var(--font-serif);
-    @apply selection:bg-primary selection:text-secondary;
-  }
 
-  /* 2. Vintage Input Styling */
-  input, select, textarea {
-    background-color: transparent !important;
-    border-top: 0 !important;
-    border-left: 0 !important;
-    border-right: 0 !important;
-    border-bottom: 1px solid var(--color-primary) !important;
-    padding: 0.5rem 0 !important;
-    outline: none !important;
-    border-radius: 0 !important;
-  }
+    /* 1. Resetting standard elements */
+    * {
+        border-color: var(--color-primary);
+        /* Standard CSS instead of @apply to prevent server crash */
+        outline-color: rgba(84, 51, 16, 0.5);
+    }
 
-  /* 3. Table Styling */
-  table, th, td {
-    border: 1px solid var(--color-primary) !important;
-  }
+    body {
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
+        font-family: var(--font-serif);
+        @apply selection:bg-primary selection:text-secondary;
+    }
 
-  /* 4. Mapbox/MapLibre Overrides */
-  .maplibregl-popup-content {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-  }
-  .maplibregl-popup-tip {
-    display: none !important;
-  }
+    /* 2. Vintage Input Styling */
+    input,
+    select,
+    textarea {
+        background-color: transparent !important;
+        border-top: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid var(--color-primary) !important;
+        padding: 0.5rem 0 !important;
+        outline: none !important;
+        border-radius: 0 !important;
+    }
+
+    /* 3. Table Styling */
+    table,
+    th,
+    td {
+        border: 1px solid var(--color-primary) !important;
+    }
+
+    /* 4. Mapbox/MapLibre Overrides */
+    .maplibregl-popup-content {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .maplibregl-popup-tip {
+        display: none !important;
+    }
 }
 
 /* === EMBLA CAROUSEL LAYOUT === */
 .embla__viewport {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .embla__container {
-  display: flex;
-  touch-action: pan-y pinch-zoom;
+    display: flex;
+    touch-action: pan-y pinch-zoom;
 }
 
 .embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
+    flex: 0 0 100%;
+    min-width: 0;
 }
+
+/* Tailwind */
+.animate-fade-in {
+    animation: fade-in 0.8s ease-out forwards;
+}
+
+.scroll-reveal {
+    /* Connects the animation to the view (scroll) progress */
+    view-timeline-name: --reveal;
+    view-timeline-axis: block;
+
+    /* The animation only plays as the element enters the view */
+    animation: reveal-on-scroll linear both;
+    animation-timeline: --reveal;
+    animation-range: entry 10% cover 30%;
+    /* Start at 10% in, finish by 30% */
+}
+
+.tilt-card {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    will-change: transform;
+}
+
+/* The hover state */
+.tilt-card:hover {
+    /* Perspective(1000px) is key for the 3D look */
+    transform: perspective(1000px) rotateX(8deg) rotateY(-8deg) scale3d(1.05, 1.05, 1.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+}
+
+.tilt-container {
+  position: relative;
+  perspective: 1000px; /* Essential for 3D depth */
+}
+
+/* 2. The Invisible Tracker Grid */
+.tracker {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+/* 3. The Interactive Card */
+.tilt-card-body {
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
+
+/* 4. The Tilt Logic (Grid Mapping) */
+/* Top-Left */
+.tracker div:nth-child(1):hover ~ .tilt-card-body { transform: rotateX(10deg) rotateY(-10deg) scale(1.05); }
+/* Top-Center */
+.tracker div:nth-child(2):hover ~ .tilt-card-body { transform: rotateX(10deg) rotateY(0deg) scale(1.05); }
+/* Top-Right */
+.tracker div:nth-child(3):hover ~ .tilt-card-body { transform: rotateX(10deg) rotateY(10deg) scale(1.05); }
+/* Mid-Left */
+.tracker div:nth-child(4):hover ~ .tilt-card-body { transform: rotateX(0deg) rotateY(-10deg) scale(1.05); }
+/* Mid-Right */
+.tracker div:nth-child(6):hover ~ .tilt-card-body { transform: rotateX(0deg) rotateY(10deg) scale(1.05); }
+/* Bottom-Left */
+.tracker div:nth-child(7):hover ~ .tilt-card-body { transform: rotateX(-10deg) rotateY(-10deg) scale(1.05); }
+/* Bottom-Center */
+.tracker div:nth-child(8):hover ~ .tilt-card-body { transform: rotateX(-10deg) rotateY(0deg) scale(1.05); }
+/* Bottom-Right */
+.tracker div:nth-child(9):hover ~ .tilt-card-body { transform: rotateX(-10deg) rotateY(10deg) scale(1.05); }
+

@@ -193,7 +193,7 @@ function Attractions() {
 
 					{/* Paginated Grid */}
 					{filteredAttractions.length > 0 ? (
-						<>
+						<div className="animate-fade-in">
 							<AttractionGrid attractions={currentItems} />
 							{totalPages > 1 && (
 								<div className="mt-16">
@@ -204,7 +204,7 @@ function Attractions() {
 									/>
 								</div>
 							)}
-						</>
+						</div>
 					) : (
 						<div className="py-20 text-center border-2 border-dashed border-primary/20">
 							<p className="text-primary font-serif text-2xl uppercase tracking-widest">No matching destinations.</p>
