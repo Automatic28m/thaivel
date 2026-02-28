@@ -8,7 +8,7 @@ function about() {
   return (
     <div>
       <section id="creator" className="h-fit bg-secondary">
-        <div className="max-w-6xl px-4 mx-auto grid grid-cols-12 gap-8 md:gap-16 items-center pt-30 pb-20">
+        <div className="max-w-5xl px-4 mx-auto grid grid-cols-12 gap-8 md:gap-16 items-center pt-30 pb-20">
 
           {/* Left Side: Editorial Image Container */}
           <div id="image" className="col-span-12 md:col-span-5">

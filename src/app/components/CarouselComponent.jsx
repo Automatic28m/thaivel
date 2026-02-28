@@ -96,8 +96,8 @@ export default function CarouselComponent() {
                             ))}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 max-w-5xl justify-center mx-auto uppercase pt-10 text-primary/40 font-serif text-xs tracking-widest">
-                        Drag to slide <FontAwesomeIcon icon={faHand} className="animate-bounce" />
+                    <div className="flex items-center gap-2 max-w-5xl justify-center mx-auto uppercase pt-10">
+                        Drag to slide <FontAwesomeIcon icon={faHand} />
                     </div>
                 </>
             )}
