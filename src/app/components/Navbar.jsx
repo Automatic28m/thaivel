@@ -1,9 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const [keyword, setKeyword] = useState("");
 
   // Updated navItems with distinct names and destination links
   const navItems = [
@@ -21,6 +25,13 @@ export default function Navbar() {
     }
   }, [isOpen]);
 
+  const handleSearch = () => {
+    if (keyword) {
+      router.push(`/attractions?search=${keyword}`);
+      setKeyword("");
+    }
+  }
+
   return (
     <>
       <nav className="fixed top-0 left-0 w-full h-16 z-50 flex items-center border-b border-secondary/20 bg-primary/80 backdrop-blur-md">
@@ -37,7 +48,7 @@ export default function Navbar() {
               <Link
                 key={item.id}
                 href={item.link}
-                className="text-secondary font-serif text-sm uppercase tracking-widest hover:opacity-70 transition-opacity"
+                className="text-secondary font-serif text-md uppercase tracking-widest hover:opacity-70 transition-opacity"
               >
                 {item.name}
               </Link>
@@ -45,7 +56,15 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4 z-[60]">
-            <button className="text-secondary cursor-pointer hover:scale-110 transition-transform">
+            <input
+              type="text"
+              placeholder="SEARCH BY NAME OR LOCATION..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="w-[300px] text-secondary bg-transparent tracking-widest text-md font-serif border-3 border-secondary py-3 uppercase px-3 outline-none"
+            />
+            <button className="text-secondary cursor-pointer hover:scale-110 transition-transform" onClick={handleSearch}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

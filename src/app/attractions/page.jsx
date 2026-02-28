@@ -52,7 +52,10 @@ function Attractions() {
 		const term = currentSearch.toLowerCase();
 		const matchesSearch = !term ||
 			item.name?.toLowerCase().includes(term) ||
-			item.location?.toLowerCase().includes(term);
+			item.location?.toLowerCase().includes(term) ||
+			item.province?.toLowerCase().includes(term) ||
+			item.district?.toLowerCase().includes(term) ||
+			item.sub_district?.toLowerCase().includes(term);
 
 		return matchesRegion && matchesCategory && matchesSearch;
 	});
@@ -98,7 +101,7 @@ function Attractions() {
 				<div className="max-w-5xl px-3 m-auto py-30">
 
 					{/* Page Header */}
-					<div className="md:pb-10">
+					<div className="">
 						<span className="text-4xl md:text-6xl text-primary font-serif uppercase tracking-widest">
 							{currentCategory === "all" && currentRegion === "all" ? "Explore Thailand" : "Filtered Results"}
 						</span>

@@ -28,7 +28,7 @@ export default function AttractionGrid({attractions = "attraction"}) {
               {item.name}
             </span>
             <span className="block uppercase font-serif text-sm text-secondary/80 tracking-widest mt-1">
-              {item.province}
+              {item.sub_district}, {item.district}, <span className="font-bold">{item.province}</span>
             </span>
           </div>
         </Link>
