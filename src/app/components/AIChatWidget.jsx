@@ -194,7 +194,7 @@ export function AIChatWidget() {
                     }`}
                 aria-label="Toggle AI Chat"
             >
-                <FontAwesomeIcon icon={isOpen ? faTimes : faCommentDots} className="text-xl" />
+                <FontAwesomeIcon icon={isOpen ? faTimes : faRobot} className="text-xl" />
             </button>
 
         </div>

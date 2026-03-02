@@ -106,29 +106,38 @@ export async function POST(req) {
         ${message}`;
 
         // 6. Call the Local LLM (Ollama running Llama 3)
-        const ollamaResponse = await fetch('http://127.0.0.1:11434/api/generate', {
+        const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.GROQ_API_KEY}` // Use your env variable
+            },
             body: JSON.stringify({
-                model: 'llama3',
-                prompt: systemPrompt,
+                model: 'llama-3.3-70b-versatile', // Recommended high-performance free model
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: message }
+                ],
+                temperature: 0.2, // Keeps the AI focused on your database facts
                 stream: false
             })
         });
 
-        if (!ollamaResponse.ok) {
-            throw new Error("Failed to connect to local Ollama instance.");
+        if (!groqResponse.ok) {
+            const errorData = await groqResponse.json();
+            throw new Error(`Groq API Error: ${errorData.error?.message || groqResponse.statusText}`);
         }
 
-        const ollamaData = await ollamaResponse.json();
+        const groqData = await groqResponse.json();
 
         // 7. Return the AI's answer and upgraded sources to your Next.js Frontend
         return NextResponse.json({
-            reply: ollamaData.response,
+            reply: groqData.choices[0].message.content,
             sources: topMatches.map(m => ({
                 name: m.name,
-                url: `/attractionPage/${m.id}`
-            })) // Now returns an object with name and URL!
+                url: `/attractionPage/${m.id}`,
+                image: m.image_url || m.pic1 || null
+            }))
         });
 
     } catch (error) {
