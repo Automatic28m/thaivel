@@ -16,7 +16,8 @@ import { Slides } from "@/components/animate-ui/primitives/effects/slide";
 import { Fade } from "@/components/animate-ui/primitives/effects/fade";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faTurnDown } from "@fortawesome/free-solid-svg-icons";
-import { faCat } from '@fortawesome/free-solid-svg-icons'
+import { faCat } from '@fortawesome/free-solid-svg-icons';
+import AttractionCount from "./components/AttractionCount";
 
 export default function Home() {
 
@@ -64,6 +65,8 @@ export default function Home() {
             </section>
 
             <EmblaCarousel />
+
+            <AttractionCount />
 
             <section id="category" className="bg-secondary h-fit">
                 <div className="max-w-5xl px-3 m-auto pt-30 pb-10 animate-fade-in scroll-reveal">
