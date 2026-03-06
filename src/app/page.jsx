@@ -16,6 +16,7 @@ import { Slides } from "@/components/animate-ui/primitives/effects/slide";
 import { Fade } from "@/components/animate-ui/primitives/effects/fade";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faTurnDown } from "@fortawesome/free-solid-svg-icons";
+import { faCat } from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
 
@@ -151,6 +152,40 @@ export default function Home() {
                                 Learn more
                             </Link>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ai" className="h-fit bg-secondary">
+                <div className="max-w-5xl px-3 m-auto py-30">
+                    <div className="grid grid-cols-12 gap-3">
+                        <div id="image"
+                            className="md:h-full col-span-12 md:col-span-4 relative w-full aspect-square md:aspect-video"
+                        >
+                            <Image
+                                src="/images/stickers/siamese_cat_happy.png"
+                                alt="happy cat"
+                                fill
+                                className="object-contain"
+                                priority={true}
+                            />
+                        </div>
+                        <div className="col-span-8 flex flex-col gap-4">
+                            <span className="text-4xl md:text-6xl text-primary uppercase font-serif">
+                                <span className="text-2xl!">say hello to</span><br />Nong Wichian
+                            </span>
+                            <HorizontalRule borderColor="border-primary" />
+                            <p className="text-lg">Your adorable and knowledgeable guide for exploring Thailand on the THAIVEL platform. Inspired by the revered Wichien Maat, or Siamese cat, this friendly AI, also known as &apos;Nong Wichian&apos;, is dedicated to assisting travelers with a personal touch.</p>
+                            <div className="flex items-center gap-2 flex-wrap text-lg">
+                                <p>Don&apos;t be shy! Nong Wichian is waiting to help you plan your adventure.</p>
+                                <br></br><p>Click the</p>
+                                {/* The Icon Container */}
+                                <span className="w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-all duration-300 hover:scale-105 backdrop-blur-md bg-primary text-secondary shrink-0">
+                                    <FontAwesomeIcon icon={faCat} />
+                                </span>
+
+                                <p>down on the right to say &apos;Sawasdee!&apos;</p>
+                            </div>                        </div>
                     </div>
                 </div>
             </section>

@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faRobot, faUser, faMapLocationDot, faCommentDots, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faCat, faUser, faMapLocationDot, faCommentDots, faTimes } from '@fortawesome/free-solid-svg-icons'
 import ReactMarkdown from 'react-markdown';
 
 export function AIChatWidget() {
@@ -67,8 +67,8 @@ export function AIChatWidget() {
                 {/* Widget Header */}
                 <div className="bg-primary text-secondary px-5 py-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <FontAwesomeIcon icon={faRobot} className="text-sm" />
-                        <span className="font-serif tracking-widest uppercase text-sm font-medium">Thaivel AI</span>
+                        <FontAwesomeIcon icon={faCat} className="text-sm" />
+                        <span className="font-serif tracking-widest uppercase text-sm font-medium">nong chien ai</span>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
@@ -86,7 +86,7 @@ export function AIChatWidget() {
 
                             {/* Minimalist Avatar */}
                             <div className="text-primary shrink-0 mt-1">
-                                <FontAwesomeIcon icon={msg.role === 'ai' ? faRobot : faUser} className="text-sm" />
+                                <FontAwesomeIcon icon={msg.role === 'ai' ? faCat : faUser} className="text-sm" />
                             </div>
 
                             {/* Message Block */}
@@ -141,7 +141,7 @@ export function AIChatWidget() {
                         <div className="flex gap-3 flex-row items-end mt-2">
                             {/* Avatar */}
                             <div className="text-primary/40 shrink-0 mb-1">
-                                <FontAwesomeIcon icon={faRobot} className="text-sm" />
+                                <FontAwesomeIcon icon={faCat} className="text-sm" />
                             </div>
 
                             {/* The Bubble */}
@@ -194,7 +194,7 @@ export function AIChatWidget() {
                     }`}
                 aria-label="Toggle AI Chat"
             >
-                <FontAwesomeIcon icon={isOpen ? faTimes : faRobot} className="text-xl" />
+                <FontAwesomeIcon icon={isOpen ? faTimes : faCat} className="text-xl" />
             </button>
 
         </div>
