@@ -159,7 +159,7 @@ const EditAttraction = () => {
 
       if (response.status === 200 || response.status === 201) {
         alert("Success! Attraction updated in MySQL.");
-        router.push("/admin/attractions");
+        router.push("/admin/attractionList");
       }
     } catch (error) {
       const sqlMessage = error.response?.data?.message || "Unknown SQL Error";
@@ -385,7 +385,7 @@ const EditAttraction = () => {
               onChange={handleChange}
               rows="6"
               placeholder="Describe the serene atmosphere and slow-life ambiance..."
-              className="bg-transparent border-primary p-2 outline-solid text-primary uppercase disabled:opacity-30"
+              className="bg-transparent border-primary p-2 outline-solid text-primary disabled:opacity-30"
             />
           </div>
 

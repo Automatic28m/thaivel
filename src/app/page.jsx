@@ -159,7 +159,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section id="ai" className="h-fit bg-secondary">
+            <section id="ai" className="h-fit bg-secondary border-y-2 border-primary">
                 <div className="max-w-5xl px-3 m-auto py-30">
                     <div className="grid grid-cols-12 gap-3">
                         <div id="image"
@@ -173,7 +173,7 @@ export default function Home() {
                                 priority={true}
                             />
                         </div>
-                        <div className="col-span-8 flex flex-col gap-4">
+                        <div className="col-span-12 md:col-span-8 flex flex-col gap-4">
                             <span className="text-4xl md:text-6xl text-primary uppercase font-serif">
                                 <span className="text-2xl!">say hello to</span><br />Nong Wichian
                             </span>

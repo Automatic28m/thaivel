@@ -68,7 +68,7 @@ export function AIChatWidget() {
                 <div className="bg-primary text-secondary px-5 py-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         <FontAwesomeIcon icon={faCat} className="text-sm" />
-                        <span className="font-serif tracking-widest uppercase text-sm font-medium">nong chien ai</span>
+                        <span className="font-serif tracking-widest uppercase text-sm font-medium">Nong Wichian ai</span>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
