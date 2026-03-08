@@ -2,6 +2,7 @@ import React from "react";
 import HorizontalRule from "../components/HorizontalRule";
 import Image from "next/image";
 import RegionGrid from "../components/RegionGrid";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
 
 function AboutThailand() {
   const regionData = [
@@ -48,26 +49,29 @@ function AboutThailand() {
         <div>
           <section id="aboutThailand" className="h-fit bg-secondary">
             <div className="max-w-5xl px-6 m-auto py-30">
-              <span className="text-4xl md:text-6xl text-primary uppercase font-serif">
-                THAILAND, A JOURNEY THROUGH 6 REGIONS
-              </span>
-              <HorizontalRule borderColor="border-primary" />
+              <Fade delay={100}>
+                <span className="text-4xl md:text-6xl text-primary uppercase font-serif">
+                  THAILAND, A JOURNEY THROUGH 6 REGIONS
+                </span>
+                <HorizontalRule borderColor="border-primary" />
+              </Fade>
 
-              {/* FIX 1: Add 'relative' and a specific height so 'fill' knows its boundaries */}
-              <div className="relative w-full h-75 md:h-125 my-10">
-                <Image
-                  src="/images/aboutThailand.png"
-                  alt="Map of Thailand 6 Regions"
-                  fill
-                  className="object-contain"
-                  priority={true}
-                />
-              </div>
+              <Fade delay={200}>
+                <div className="relative w-full h-75 md:h-125 my-10">
+                  <Image
+                    src="/images/aboutThailand.png"
+                    alt="Map of Thailand 6 Regions"
+                    fill
+                    className="object-contain"
+                    priority={true}
+                  />
+                </div>
+              </Fade>
 
               <div className="grid grid-cols-12 gap-x-6 gap-y-12">
-                {regionData.map((item) => (
+                {regionData.map((item, i) => (
                   /* FIX 2: Change item.key to item.id to match your data structure */
-                  <div key={item.id} className="md:col-span-6 col-span-12">
+                  <Fade key={item.id} delay={300 + (i * 100)} className="md:col-span-6 col-span-12">
                     <span className="text-xl uppercase font-serif text-primary">
                       {item.name}
                     </span>
@@ -75,7 +79,7 @@ function AboutThailand() {
                     <p className="text-primary font-serif leading-relaxed">
                       {item.content}
                     </p>
-                  </div>
+                  </Fade>
                 ))}
               </div>
             </div>

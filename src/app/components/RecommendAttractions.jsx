@@ -15,7 +15,7 @@ function RecommendAttractions() {
                 </div>
                 <CarouselComponent />
             </div>
-            <div className="hidden md:flex absolute bottom-[20%] left-[15%] w-[150px] h-[150px] pointer-events-none">
+            {/* <div className="hidden md:flex absolute bottom-[20%] left-[15%] w-[150px] h-[150px] pointer-events-none">
                 <Image
                     src="/images/stickers/siamese_cat_happy.png"
                     alt="Detailed decorative ceremonial staff with gold finial and lotus base"
@@ -23,7 +23,7 @@ function RecommendAttractions() {
                     className="object-contain object-bottom"
                     priority={true} // Priority since it's above the fold on larger screens
                 />
-            </div>
+            </div> */}
         </section>
     )
 }

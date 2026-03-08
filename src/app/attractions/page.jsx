@@ -203,27 +203,25 @@ function Attractions() {
 					</Fade>
 
 
-					<Fade delay={600}>
-						{/* Paginated Grid */}
-						{filteredAttractions.length > 0 ? (
-							<div>
-								<AttractionGrid attractions={currentItems} />
-								{totalPages > 1 && (
-									<div className="mt-16">
-										<Pagination
-											currentPage={currentPage}
-											totalPages={totalPages}
-											onPageChange={(page) => updateURL({ page: page.toString() })}
-										/>
-									</div>
-								)}
-							</div>
-						) : (
-							<div className="py-20 text-center border-2 border-dashed border-primary/20">
-								<p className="text-primary font-serif text-2xl uppercase tracking-widest">No matching destinations.</p>
-							</div>
-						)}
-					</Fade>
+					{/* Paginated Grid */}
+					{filteredAttractions.length > 0 ? (
+						<div>
+							<AttractionGrid attractions={currentItems} />
+							{totalPages > 1 && (
+								<div className="mt-16">
+									<Pagination
+										currentPage={currentPage}
+										totalPages={totalPages}
+										onPageChange={(page) => updateURL({ page: page.toString() })}
+									/>
+								</div>
+							)}
+						</div>
+					) : (
+						<div className="py-20 text-center border-2 border-dashed border-primary/20">
+							<p className="text-primary font-serif text-2xl uppercase tracking-widest">No matching destinations.</p>
+						</div>
+					)}
 				</div>
 			</section>
 		</div>

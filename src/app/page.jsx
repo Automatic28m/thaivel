@@ -77,7 +77,7 @@ export default function Home() {
                     </div>
                     <HorizontalRule borderColor="border-primary" />
                     <CategoryGrid />
-                    <div className="hidden md:flex absolute bottom-[0%] right-[-5%] w-[150px] h-[150px] pointer-events-none">
+                    <div className="hidden lg:flex absolute bottom-[0%] right-[-5%] w-[150px] h-[150px] pointer-events-none">
                         <Image
                             src="/images/stickers/tuktuk_wheelie.png"
                             alt="Detailed decorative ceremonial staff with gold finial and lotus base"
@@ -154,7 +154,7 @@ export default function Home() {
                                 className="object-contain"
                                 priority={true}
                             />
-                            <div className="hidden md:flex absolute top-[-65%] left-[-5%] w-1/4 h-3/4 pointer-events-none">
+                            <div className="hidden lg:flex absolute top-[-65%] left-[-5%] w-1/4 h-3/4 pointer-events-none">
                                 <Image
                                     src="/images/stickers/tuktuk_drift.png"
                                     alt="Detailed decorative ceremonial staff with gold finial and lotus base"
@@ -163,7 +163,7 @@ export default function Home() {
                                     priority={true} // Priority since it's above the fold on larger screens
                                 />
                             </div>
-                            <div className="hidden md:flex absolute bottom-[-5%] right-[5%] md:right-[-5%] w-1/4 h-3/4 pointer-events-none">
+                            <div className="hidden lg:flex absolute bottom-[-5%] right-[5%] md:right-[-5%] w-1/4 h-3/4 pointer-events-none">
                                 <Image
                                     src="/images/stickers/siamese_cat_exciting.png"
                                     alt="Detailed decorative ceremonial staff with gold finial and lotus base"
@@ -191,11 +191,11 @@ export default function Home() {
                 <div className="max-w-5xl px-3 m-auto py-30">
                     <div className="grid grid-cols-12 gap-3">
                         <div id="image"
-                            className="md:h-full mx-auto col-span-12 md:col-span-4 w-[75%] relative aspect-square md:aspect-video"
+                            className="md:h-full mx-auto col-span-12 md:col-span-4 w-[75%] relative aspect-square md:aspect-video  transition-all duration-300 hover:scale-110 active:scale-95"
                         >
                             <Image
-                                src="/images/stickers/siamese_cat_winking.png"
-                                alt="happy cat"
+                                src="/images/stickers/tuktuk_wheelie.png"
+                                alt="tuktuk_wheelie"
                                 fill
                                 className="object-contain"
                                 priority={true}
@@ -203,17 +203,26 @@ export default function Home() {
                         </div>
                         <div className="col-span-12 md:col-span-8 flex flex-col gap-4">
                             <span className="text-4xl md:text-6xl text-primary uppercase font-serif">
-                                <span className="text-2xl!">say hello to</span><br />Nong Wichian
+                                <span className="text-2xl!">say hello to</span><br />TukTuk Driver Ai
                             </span>
                             <HorizontalRule borderColor="border-primary" />
-                            <p className="text-lg">Your adorable and knowledgeable guide for exploring Thailand on the THAIVEL platform. Inspired by the revered Wichien Maat, or Siamese cat, this friendly AI, also known as &apos;Nong Wichian&apos;, is dedicated to assisting travelers with a personal touch.</p>
+                            <p className="text-lg">Your street-smart travel guide designed to bridge the gap between your curiosity
+                                and the country&#39;s most captivating destinations. Inspired by the local
+                                wisdom of Thai street life, this friendly assistant helps you uncover hidden
+                                gems with a professional and personal touch.</p>
                             <div className="flex items-center gap-2 flex-wrap text-lg">
-                                <p>Don&apos;t be shy! Nong Wichian is waiting to help you plan your adventure.</p>
+                                <p>Don&apos;t be shy! TukTuk Driver is waiting to help you plan your adventure.</p>
                                 <br></br><p>Click the</p>
                                 {/* The Icon Container */}
-                                <span className="w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-all duration-300 hover:scale-105 backdrop-blur-md bg-primary text-secondary shrink-0">
-                                    <FontAwesomeIcon icon={faCat} />
+                                <span className="w-10 h-10 transition-all relative duration-300 hover:scale-110 active:scale-95">
+                                    <Image
+                                        src="/images/stickers/tuktuk_normal.png"
+                                        alt="tuktuk toggle"
+                                        fill
+                                        className="object-contain"
+                                    />
                                 </span>
+
 
                                 <p>down on the right to say &apos;Sawasdee!&apos;</p>
                             </div>                        </div>
