@@ -45,9 +45,7 @@ export default function Home() {
                     </Fade>
                     <Fade delay={500}>
                         <p className="text-xl md:text-2xl text-secondary font-serif py-10 max-w-2xl">
-                            From the serene grandeur of ancient temples to the sophisticated
-                            pulse of modern cafes and malls, discover a journey that resonates
-                            with every traveler.
+                            Thailand has a great mix of old traditions and modern life. There is something for every traveler to enjoy here. Whether you like history or new experiences, you will find a trip that is perfect for you.
                         </p>
                     </Fade>
                 </div>
@@ -154,15 +152,7 @@ export default function Home() {
                                 className="object-contain"
                                 priority={true}
                             />
-                            <div className="hidden lg:flex absolute top-[-65%] left-[-5%] w-1/4 h-3/4 pointer-events-none">
-                                <Image
-                                    src="/images/stickers/tuktuk_drift.png"
-                                    alt="Detailed decorative ceremonial staff with gold finial and lotus base"
-                                    fill
-                                    className="object-contain object-bottom"
-                                    priority={true} // Priority since it's above the fold on larger screens
-                                />
-                            </div>
+
                             <div className="hidden lg:flex absolute bottom-[-5%] right-[5%] md:right-[-5%] w-1/4 h-3/4 pointer-events-none">
                                 <Image
                                     src="/images/stickers/siamese_cat_exciting.png"
@@ -258,14 +248,7 @@ export default function Home() {
                             className="col-span-12 md:col-span-6 flex flex-col justify-center"
                         >
                             <p className="font-serif text-secondary text-lg">
-                                Thailand awaits with open arms and a world of wonders.
-                                Experience a land where glittering temples stand as testaments
-                                to a rich history, and colorful festivals ignite the senses.
-                                Whether you seek adventure in lush jungles, relaxation on
-                                sun-kissed beaches, or a culinary voyage through exquisite local
-                                dishes, your perfect escape is here. Uncover the secrets of the
-                                Kingdom, connect with its friendly people, and let the unique
-                                charm of Thailand enchant you.
+                                Thailand offers a remarkable variety of experiences, from historic temples to vibrant local festivals. Visitors can explore lush landscapes, relax on pristine beaches, or enjoy the country’s world-renowned culinary scene. Beyond its natural beauty, the Kingdom is defined by the genuine hospitality of its people and a unique cultural charm that ensures a memorable stay for every traveler.
                             </p>
                         </div>
                         <div className="md:col-span-4"></div>

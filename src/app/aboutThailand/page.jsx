@@ -65,6 +65,15 @@ function AboutThailand() {
                     className="object-contain"
                     priority={true}
                   />
+                  <div className="hidden lg:flex absolute bottom-[-8%] right-[12%] w-[150px] h-[150px] pointer-events-none">
+                    <Image
+                      src="/images/stickers/siamese_cat_kissing.png"
+                      alt="Detailed decorative ceremonial staff with gold finial and lotus base"
+                      fill
+                      className="object-contain object-bottom"
+                      priority={true} // Priority since it's above the fold on larger screens
+                    />
+                  </div>
                 </div>
               </Fade>
 
