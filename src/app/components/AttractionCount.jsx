@@ -1,22 +1,24 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react' // Added useRef
 import axios from 'axios'
 import { SlidingNumber } from "@/components/animate-ui/primitives/texts/sliding-number";
 import { Map, MapMarker, MarkerContent, MarkerPopup } from "@/components/ui/map";
-import { MapPin } from "lucide-react";
+import { MapPin, RotateCcw } from "lucide-react"; // Added RotateCcw for the icon
 import Link from "next/link";
-
 
 function AttractionCount() {
     const [count, setCount] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [attractions, setAttractions] = useState([]);
+    const mapRef = useRef(null); // Ref to access the map instance
+
+    const initialCenter = [100.5018, 13.7563];
+    const initialZoom = 4;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/api/attractions/getAttractions')
-                // Using the specific nested path from your logs
                 const dataArray = response.data.data;
                 setAttractions(dataArray);
                 setCount(dataArray.length);
@@ -30,50 +32,73 @@ function AttractionCount() {
         fetchData();
     }, [])
 
+    // Function to reset the zoom and center
+    const handleReset = () => {
+        if (mapRef.current) {
+            mapRef.current.flyTo({
+                center: initialCenter,
+                zoom: initialZoom,
+                duration: 1500 // Smooth transition in ms
+            });
+        }
+    };
+
     return (
         <section id="number" className="bg-primary border-y border-secondary/10">
             <div className="m-auto">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-16 items-center">
 
                     {/* Map Container */}
-                    <div className="col-span-1 md:col-span-7 h-[500px]">
+                    <div className="col-span-1 md:col-span-7 h-[500px] relative"> {/* Added relative for button positioning */}
                         {!isLoading && (
-                            <Map
-                                // Zoomed out to 6 to see markers across all of Thailand
-                                center={[100.5018, 13.7563]}
-                                zoom={4}
-                            >
-                                {attractions
-                                    .filter(item => {
-                                        const lat = parseFloat(item.lat);
-                                        const lng = parseFloat(item.lon);
-                                        return !isNaN(lat) && !isNaN(lng);
-                                    })
-                                    .map((item) => (
-                                        <MapMarker
-                                            key={item.id}
-                                            longitude={parseFloat(item.lon)}
-                                            latitude={parseFloat(item.lat)}
-                                        >
-                                            <MarkerContent>
-                                                <div className="group cursor-pointer transition-transform hover:scale-110">
-                                                    <MapPin
-                                                        className="fill-secondary stroke-primary"
-                                                        size={28}
-                                                    />
-                                                </div>
-                                            </MarkerContent>
-                                            <MarkerPopup>
-                                                <div className="p-1 space-y-1 font-serif text-primary uppercase min-w-[120px]">
-                                                    <p className="font-bold tracking-widest text-xs">{item.name}</p>
-                                                    <p className="text-[9px] opacity-70">
-                                                        {parseFloat(item.lat).toFixed(4)}, {parseFloat(item.lon).toFixed(4)}
-                                                    </p>
-                                                </div>
-                                            </MarkerPopup>
-                                        </MapMarker>
-                                    ))}
-                            </Map>
+                            <>
+                                <Map
+                                    ref={mapRef} // Attach the ref here
+                                    center={initialCenter}
+                                    zoom={initialZoom}
+                                >
+                                    {attractions
+                                        .filter(item => {
+                                            const lat = parseFloat(item.lat);
+                                            const lng = parseFloat(item.lon);
+                                            return !isNaN(lat) && !isNaN(lng);
+                                        })
+                                        .map((item) => (
+                                            <MapMarker
+                                                key={item.id}
+                                                longitude={parseFloat(item.lon)}
+                                                latitude={parseFloat(item.lat)}
+                                            >
+                                                <MarkerContent>
+                                                    <div className="group cursor-pointer transition-transform hover:scale-110">
+                                                        <MapPin
+                                                            className="fill-secondary stroke-primary"
+                                                            size={28}
+                                                        />
+                                                    </div>
+                                                </MarkerContent>
+                                                <MarkerPopup>
+                                                    <div className="p-1 space-y-1 font-serif text-primary uppercase min-w-[120px]">
+                                                        <p className="font-bold tracking-widest text-xs">{item.name}</p>
+                                                        <p className="text-[9px] opacity-70">
+                                                            {parseFloat(item.lat).toFixed(4)}, {parseFloat(item.lon).toFixed(4)}
+                                                        </p>
+                                                    </div>
+                                                </MarkerPopup>
+                                            </MapMarker>
+                                        ))}
+                                </Map>
+
+                                {/* Floating Reset Button */}
+                                <button
+                                    onClick={handleReset}
+                                    className="absolute bottom-4 left-4 z-10 bg-secondary/80 hover:bg-secondary text-primary p-2 transition-all border border-primary/20 backdrop-blur-sm shadow-lg flex items-center gap-2 uppercase font-serif text-[10px] tracking-widest"
+                                    aria-label="Reset Map View"
+                                >
+                                    <RotateCcw size={14} />
+                                    <span>Reset View</span>
+                                </button>
+                            </>
                         )}
                     </div>
 

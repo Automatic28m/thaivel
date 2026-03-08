@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTiktok, faInstagram, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Map, MapMarker, MarkerContent, MarkerPopup } from "@/components/ui/map";
-import { MapPin } from "lucide-react";
+import { MapPin, RotateCcw } from "lucide-react";
 import RecommendAttractions from "@/app/components/RecommendAttractions";
 
 function AttractionPage() {
@@ -21,11 +21,21 @@ function AttractionPage() {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const galleryRef = useRef(null);
+	const mapRef = useRef(null);
 	const [attraction, setAttraction] = useState({});
 	const [album, setAlbum] = useState([]);
 
-	// 1. Initialize map coordinates as null
 	const [mapCoords, setMapCoords] = useState(null);
+
+	const handleResetMap = () => {
+		if (mapRef.current && mapCoords) {
+			mapRef.current.flyTo({
+				center: [mapCoords.lng, mapCoords.lat],
+				zoom: 14,
+				duration: 1500
+			});
+		}
+	};
 
 	useEffect(() => {
 		if (!id) return;
@@ -172,16 +182,18 @@ function AttractionPage() {
 								Location Map
 							</h2>
 							<HorizontalRule borderColor="border-primary" />
-							<div className="h-[300px] w-full border border-primary">
-								{/* Center dynamically updates based on fetched coordinates (Format: [Lng, Lat]) */}
-								<Map center={[mapCoords.lng, mapCoords.lat]} zoom={14} >
+							<div className="h-[400px] w-full border border-primary relative group">
+								<Map
+									ref={mapRef} // Attach the ref
+									center={[mapCoords.lng, mapCoords.lat]}
+									zoom={14}
+								>
 									<MapMarker
 										longitude={mapCoords.lng}
 										latitude={mapCoords.lat}
 									>
 										<MarkerContent>
 											<div className="cursor-pointer">
-												{/* Styled map pin to fit the theme */}
 												<MapPin
 													className="fill-primary stroke-secondary"
 													size={36}
@@ -198,6 +210,16 @@ function AttractionPage() {
 										</MarkerPopup>
 									</MapMarker>
 								</Map>
+
+								{/* 4. Floating Reset Button */}
+								<button
+									onClick={handleResetMap}
+									className="absolute bottom-4 left-4 z-10 bg-secondary/90 hover:bg-secondary text-primary p-2 border border-primary/20 backdrop-blur-sm shadow-md flex items-center gap-2 uppercase font-serif text-[10px] tracking-widest transition-all"
+									aria-label="Reset Map View"
+								>
+									<RotateCcw size={14} />
+									<span>Reset View</span>
+								</button>
 							</div>
 						</div>
 					)}
