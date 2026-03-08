@@ -68,7 +68,7 @@ export function EmblaCarousel() {
     return (
         <section className="bg-secondary py-12 overflow-hidden">
             <div className="embla w-full flex" ref={emblaRef}>
-                <div className="embla__container flex gap-4 px-0">
+                <div className="embla__container flex gap-2 px-0">
                     {attractions.map((item, index) => (
                         <div
                             key={`${item.id}-${index}`}
