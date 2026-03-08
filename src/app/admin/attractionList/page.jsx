@@ -19,7 +19,15 @@ const AttractionsTable = () => {
     }
   }, []);
 
+  const updateEmbeddingData = () => {
+    axios
+      .get('/api/setup-embeddings')
+      .then(console.log("Update Embedding Data Successfully"))
+      .catch((err) => console.error(err.message))
+  }
+
   useEffect(() => {
+    updateEmbeddingData();
     fetchAttractions();
   }, [fetchAttractions]);
 
