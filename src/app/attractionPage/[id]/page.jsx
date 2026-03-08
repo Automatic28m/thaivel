@@ -13,6 +13,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Map, MapMarker, MarkerContent, MarkerPopup } from "@/components/ui/map";
 import { MapPin, RotateCcw } from "lucide-react";
 import RecommendAttractions from "@/app/components/RecommendAttractions";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
 
 function AttractionPage() {
 	const { id } = useParams();
@@ -90,8 +91,12 @@ function AttractionPage() {
 							<HorizontalRule borderColor="border-primary" />
 							<p className="text-sm">Location: {attraction.location}, {attraction.sub_district}, {attraction.district}, {attraction.province}</p>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<p className="text-sm">Open: {attraction.open_hour}</p>
-								<p className="text-sm">Tel: {attraction.tel}</p>
+								{attraction.open_hour && (
+									<p className="text-sm">Open: {attraction.open_hour}</p>
+								)}
+								{attraction.tel && (
+									<p className="text-sm">Tel: {attraction.tel}</p>
+								)}
 							</div>
 							{attraction.igUrl && (
 								<div>
@@ -122,13 +127,14 @@ function AttractionPage() {
 								</div>
 							)}
 						</div>
-						<div className="col-span-12 md:col-span-6 relative h-[400px]">
+						<div className="col-span-12 md:col-span-6 relative h-[400px] overflow-hidden transition-all">
 							<Image
 								src={attraction.thumbnail || "/images/placeholder.jpg"}
 								alt={attraction.name}
 								fill
-								className="object-cover"
+								className="object-cover hover:scale-110 cursor-pointer transition-transform"
 								priority
+								onClick={() => handlePreviewClick(0)}
 							/>
 						</div>
 					</div>
@@ -151,10 +157,10 @@ function AttractionPage() {
 									/>
 									{i === 3 && album.length > 4 && (
 										<div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
-											<span className="text-secondary font-serif text-2xl uppercase">
+											<span className="text-secondary font-serif text-4xl uppercase">
 												+ {album.length - 4}
 											</span>
-											<span className="text-secondary font-serif text-[10px] uppercase opacity-80">
+											<span className="text-secondary font-serif text-xl uppercase opacity-80">
 												More
 											</span>
 										</div>
@@ -165,15 +171,17 @@ function AttractionPage() {
 					)}
 
 					{/* Description Section */}
-					<div id="description" className="max-w-5xl mt-10">
-						<h2 className="text-3xl md:text-4xl text-primary font-serif uppercase tracking-widest">
-							About {attraction.name}
-						</h2>
-						<HorizontalRule borderColor="border-primary" />
-						<p className="text-primary font-serif leading-relaxed whitespace-pre-line text-lg opacity-90">
-							{attraction.description}
-						</p>
-					</div>
+					{attraction.description && (
+						<div id="description" className="max-w-5xl mt-10">
+							<h2 className="text-3xl md:text-4xl text-primary font-serif uppercase tracking-widest">
+								About {attraction.name}
+							</h2>
+							<HorizontalRule borderColor="border-primary" />
+							<p className="text-primary font-serif leading-relaxed whitespace-pre-line text-lg opacity-90">
+								{attraction.description}
+							</p>
+						</div>
+					)}
 
 					{/* 3. Render Map only if coordinates successfully loaded */}
 					{mapCoords && (
@@ -258,7 +266,7 @@ function AttractionPage() {
 				<div
 					className={
 						isOpen
-							? "fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4"
+							? "fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4 animate-fade-blur-in "
 							: "hidden"
 					}
 				>

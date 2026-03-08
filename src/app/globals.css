@@ -132,6 +132,21 @@
     animation: fade-in 0.8s ease-out forwards;
 }
 
+@keyframes fade-in-blur {
+    0% {
+        opacity: 0;
+        filter: blur(10px); /* Start blurred */
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0); /* End crystal clear */
+    }
+}
+
+.animate-fade-blur-in {
+    animation: fade-in-blur 0.5s ease-out forwards;
+}
+
 .scroll-reveal {
     /* Connects the animation to the view (scroll) progress */
     view-timeline-name: --reveal;
