@@ -44,7 +44,7 @@ export default function Navbar() {
                     </Link>
 
                     {/* FIX: Map using item.link and item.name */}
-                    <div className="hidden md:flex items-center gap-12">
+                    <div className="hidden lg:flex items-center gap-12">
                         {navItems.map((item) => (
                             <Link
                                 key={item.id}
@@ -57,7 +57,7 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex items-center gap-4 z-[60]">
-                        <div className="hidden md:flex">
+                        <div className="hidden lg:flex">
                             <input
                                 type="text"
                                 placeholder="SEARCH BY NAME OR LOCATION..."
@@ -85,7 +85,7 @@ export default function Navbar() {
                         </div>
 
                         <button
-                            className="md:hidden text-secondary p-2 cursor-pointer"
+                            className="lg:hidden text-secondary p-2 cursor-pointer"
                             onClick={() => setIsOpen(!isOpen)}
                             aria-label="Toggle Menu"
                         >
@@ -107,7 +107,7 @@ export default function Navbar() {
 
             {/* FIX: Mobile menu mapping using item.link and item.name */}
             <div
-                className={`fixed inset-0 bg-primary/80 backdrop-blur-2xl flex flex-col items-left justify-center gap-10 transition-all duration-500 md:hidden z-40 px-6
+                className={`fixed inset-0 bg-primary/80 backdrop-blur-2xl flex flex-col items-left justify-center gap-10 transition-all duration-500 lg:hidden z-40 px-6
         ${isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
             >
                 {navItems.map((item) => (

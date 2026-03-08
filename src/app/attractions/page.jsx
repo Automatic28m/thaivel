@@ -102,7 +102,7 @@ function Attractions() {
 				<div className="max-w-5xl px-3 m-auto py-30">
 
 					{/* Page Header */}
-					<Fade delay={200}>
+					<Fade delay={100}>
 						<div className="">
 							<span className="text-4xl md:text-6xl text-primary font-serif uppercase tracking-widest">
 								{currentCategory === "all" && currentRegion === "all" ? "Explore Thailand" : "Filtered Results"}
@@ -112,7 +112,7 @@ function Attractions() {
 					</Fade>
 
 					{/* Region Selection Block (Dynamic) */}
-					<Fade delay={400}>
+					<Fade delay={200}>
 						<div className="mb-10">
 							<p className="text-primary font-serif text-xs uppercase tracking-[0.3em] mb-4">Select Region</p>
 							<div className="flex flex-wrap gap-x-8 gap-y-4">
@@ -135,7 +135,7 @@ function Attractions() {
 						</div>
 					</Fade>
 
-					<Fade delay={600}>
+					<Fade delay={300}>
 						{/* Category Selection Block */}
 						<div className="pb-4 md:pb-10">
 							<p className="text-primary font-serif text-xs uppercase tracking-[0.3em] mb-4">Select Category</p>
@@ -159,7 +159,7 @@ function Attractions() {
 						</div>
 					</Fade>
 
-					<Fade delay={800}>
+					<Fade delay={400}>
 						{/* Search Section */}
 						<section id="search" className="py-4 md:py-10 border-t border-primary/10">
 							<div className="grid grid-cols-12 md:gap-x-12 gap-y-3">
@@ -181,7 +181,7 @@ function Attractions() {
 						</section>
 					</Fade>
 
-					<Fade delay={1000}>
+					<Fade delay={500}>
 						{/* Active Filter Badges */}
 						{(currentSearch || currentCategory !== "all" || currentRegion !== "all") && (
 							<div className="mb-10 flex justify-between items-center border-b border-primary/10 pb-4">
@@ -203,7 +203,7 @@ function Attractions() {
 					</Fade>
 
 
-					<Fade delay={1200}>
+					<Fade delay={600}>
 						{/* Paginated Grid */}
 						{filteredAttractions.length > 0 ? (
 							<div>
