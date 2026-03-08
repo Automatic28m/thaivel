@@ -69,7 +69,7 @@ export default function Home() {
             <AttractionCount />
 
             <section id="category" className="bg-secondary h-fit">
-                <div className="max-w-5xl px-3 m-auto pt-30 pb-10 animate-fade-in scroll-reveal">
+                <div className="max-w-5xl px-3 m-auto pt-30 pb-10 animate-fade-in scroll-reveal relative">
                     <div className="">
                         <span className="text-4xl md:text-6xl text-primary font-serif">
                             EXPLORE ATTRACTIONS IN THAIVEL
@@ -77,6 +77,15 @@ export default function Home() {
                     </div>
                     <HorizontalRule borderColor="border-primary" />
                     <CategoryGrid />
+                    <div className="hidden md:flex absolute bottom-[0%] right-[-5%] w-[150px] h-[150px] pointer-events-none">
+                        <Image
+                            src="/images/stickers/tuktuk_wheelie.png"
+                            alt="Detailed decorative ceremonial staff with gold finial and lotus base"
+                            fill
+                            className="object-contain object-bottom"
+                            priority={true} // Priority since it's above the fold on larger screens
+                        />
+                    </div>
                 </div>
             </section>
 
@@ -145,6 +154,25 @@ export default function Home() {
                                 className="object-contain"
                                 priority={true}
                             />
+                            <div className="hidden md:flex absolute top-[-65%] left-[-5%] w-1/4 h-3/4 pointer-events-none">
+                                <Image
+                                    src="/images/stickers/tuktuk_drift.png"
+                                    alt="Detailed decorative ceremonial staff with gold finial and lotus base"
+                                    fill
+                                    className="object-contain object-bottom"
+                                    priority={true} // Priority since it's above the fold on larger screens
+                                />
+                            </div>
+                            <div className="hidden md:flex absolute bottom-[-5%] right-[5%] md:right-[-5%] w-1/4 h-3/4 pointer-events-none">
+                                <Image
+                                    src="/images/stickers/siamese_cat_exciting.png"
+                                    alt="Detailed decorative ceremonial staff with gold finial and lotus base"
+                                    fill
+                                    className="object-contain object-bottom"
+                                    priority={true} // Priority since it's above the fold on larger screens
+                                />
+                            </div>
+
                         </div>
                         <div className="col-span-12 md:col-span-4 flex justify-center">
                             {/* Added w-full and block to make the button fill the container */}
@@ -163,10 +191,10 @@ export default function Home() {
                 <div className="max-w-5xl px-3 m-auto py-30">
                     <div className="grid grid-cols-12 gap-3">
                         <div id="image"
-                            className="md:h-full col-span-12 md:col-span-4 relative w-full aspect-square md:aspect-video"
+                            className="md:h-full mx-auto col-span-12 md:col-span-4 w-[75%] relative aspect-square md:aspect-video"
                         >
                             <Image
-                                src="/images/stickers/siamese_cat_happy.png"
+                                src="/images/stickers/siamese_cat_winking.png"
                                 alt="happy cat"
                                 fill
                                 className="object-contain"

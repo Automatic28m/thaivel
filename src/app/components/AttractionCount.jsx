@@ -41,7 +41,7 @@ function AttractionCount() {
                             <Map
                                 // Zoomed out to 6 to see markers across all of Thailand
                                 center={[100.5018, 13.7563]}
-                                zoom={6}
+                                zoom={4}
                             >
                                 {attractions
                                     .filter(item => {
