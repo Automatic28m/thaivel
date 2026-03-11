@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { faHand } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Fade } from '@/components/animate-ui/primitives/effects/fade'
 
 export default function CarouselComponent() {
     const [attractions, setAttractions] = useState([])
@@ -69,7 +70,9 @@ export default function CarouselComponent() {
                     <div className="embla w-full flex justify-start" ref={emblaRef}>
                         <div className="embla__container flex gap-4 px-0">
                             {attractions.map((item, index) => (
-                                <div
+                                <Fade delay={0 + (index * 100)}
+                                    inView={true}
+                                    inViewOnce={true}
                                     key={`${item.id}-${index}`}
                                     className="embla__slide flex-[0_0_85%] md:flex-[0_0_32%] relative"
                                 >
@@ -92,7 +95,7 @@ export default function CarouselComponent() {
                                             </div>
                                         </div>
                                     </Link>
-                                </div>
+                                </Fade>
                             ))}
                         </div>
                     </div>

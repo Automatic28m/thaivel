@@ -63,7 +63,7 @@ export function AIChatWidget() {
                 className={`mb-4 w-96 max-w-[calc(100vw-2rem)] bg-secondary/60 backdrop-blur-md border border-primary/20 shadow-2xl overflow-hidden flex flex-col transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100 h-[600px] max-h-[calc(100vh-8rem)]' : 'scale-0 opacity-0 h-0'}`}
             >
                 {/* Widget Header */}
-                <div className="bg-primary text-secondary px-5 py-4 flex justify-between items-center">
+                <div className="bg-primary text-secondary px-5 py-4 flex justify-between items-center ">
                     <div className="flex items-center gap-3">
                         {/* Fix: Added container for the fill image */}
                         <div className="relative w-8 h-8">
@@ -185,7 +185,7 @@ export function AIChatWidget() {
             {/* Main Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-15 h-15 md:w-20 md:h-20 relative transition-all duration-300 hover:scale-110 active:scale-95"
+                className="w-15 h-15 md:w-20 md:h-20 relative transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
                 aria-label="Toggle AI Chat"
             >
                 <Image

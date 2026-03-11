@@ -118,18 +118,19 @@ function Attractions() {
 							<div className="flex flex-wrap gap-x-8 gap-y-4">
 								<button
 									onClick={() => updateURL({ region: "all" })}
-									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion === "all" ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
+									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion === "all" ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"} cursor-pointer`}
 								>
 									All Regions
 								</button>
-								{geographies.map((geo) => (
-									<button
-										key={geo.id}
-										onClick={() => updateURL({ region: geo.name_eng })}
-										className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion.toLowerCase() === geo.name_eng.toLowerCase() ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
-									>
-										{geo.name_eng}
-									</button>
+								{geographies.map((geo, i) => (
+									<Fade delay={200 + (i * 100)} key={geo.id}>
+										<button
+											onClick={() => updateURL({ region: geo.name_eng })}
+											className={`font-serif text-lg uppercase tracking-widest transition-all ${currentRegion.toLowerCase() === geo.name_eng.toLowerCase() ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"} cursor-pointer`}
+										>
+											{geo.name_eng}
+										</button>
+									</Fade>
 								))}
 							</div>
 						</div>
@@ -142,18 +143,19 @@ function Attractions() {
 							<div className="flex flex-wrap gap-x-8 gap-y-4">
 								<button
 									onClick={() => updateURL({ category: "all" })}
-									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === "all" ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
+									className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === "all" ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}  cursor-pointer`}
 								>
 									All Category
 								</button>
-								{categories.map((cat) => (
-									<button
-										key={cat.id}
-										onClick={() => updateURL({ category: cat.id.toString() })}
-										className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === cat.id.toString() ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}
-									>
-										{cat.name}
-									</button>
+								{categories.map((cat, i) => (
+									<Fade delay={300 + (i * 100)} key={cat.id}>
+										<button
+											onClick={() => updateURL({ category: cat.id.toString() })}
+											className={`font-serif text-lg uppercase tracking-widest transition-all ${currentCategory === cat.id.toString() ? "text-primary border-b-2 border-primary" : "text-primary/60 hover:text-primary cursor-pointer"}`}
+										>
+											{cat.name}
+										</button>
+									</Fade>
 								))}
 							</div>
 						</div>
@@ -173,7 +175,7 @@ function Attractions() {
 								/>
 								<button
 									onClick={() => updateURL({ search: searchInput })}
-									className="col-span-12 md:col-span-4 w-full uppercase text-primary text-lg font-serif border-3 border-primary py-3 hover:bg-primary hover:text-secondary transition-colors"
+									className="col-span-12 md:col-span-4 w-full uppercase text-primary text-lg font-serif border-3 border-primary py-3 hover:bg-primary hover:text-secondary transition-colors cursor-pointer"
 								>
 									search
 								</button>
