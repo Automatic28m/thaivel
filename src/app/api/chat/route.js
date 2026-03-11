@@ -69,6 +69,8 @@ export async function POST(req) {
         scoredAttractions.sort((a, b) => b.score - a.score);
         const SIMILARITY_THRESHOLD = 0.25;
         const validMatches = scoredAttractions.filter(item => item.score > SIMILARITY_THRESHOLD);
+        console.log("ValidMatches :", validMatches);
+        
 
         if (validMatches.length === 0) {
             return NextResponse.json({
@@ -105,6 +107,9 @@ export async function POST(req) {
         USER QUESTION: 
         ${message}`;
 
+        // const systemPrompt = `Describe all of these attrcations; ${contextData}`;
+
+
         // 6. Call the Local LLM (Ollama running Llama 3)
         const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
@@ -132,11 +137,12 @@ export async function POST(req) {
 
         // 7. Return the AI's answer and upgraded sources to your Next.js Frontend
         return NextResponse.json({
+            validMatches: validMatches,
             reply: groqData.choices[0].message.content,
             sources: topMatches.map(m => ({
                 name: m.name,
                 url: `/attractionPage/${m.id}`,
-                image: m.image_url || m.pic1 || null
+                image: m.image_url || m.pic1 || null,
             }))
         });
 

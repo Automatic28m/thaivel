@@ -45,6 +45,7 @@ export function AIChatWidget() {
                 content: response.data.reply,
                 sources: response.data.sources
             }])
+            console.log(response);
         } catch (error) {
             console.error("Chat Error:", error)
             setMessages(prev => [...prev, {
