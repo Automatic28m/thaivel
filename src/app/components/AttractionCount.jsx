@@ -1,16 +1,17 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react' // Added useRef
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { SlidingNumber } from "@/components/animate-ui/primitives/texts/sliding-number";
 import { Map, MapMarker, MarkerContent, MarkerPopup } from "@/components/ui/map";
-import { MapPin, RotateCcw } from "lucide-react"; // Added RotateCcw for the icon
+import { MapPin, RotateCcw } from "lucide-react";
 import Link from "next/link";
+import { Fade } from '@/components/animate-ui/primitives/effects/fade'
 
 function AttractionCount() {
     const [count, setCount] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [attractions, setAttractions] = useState([]);
-    const mapRef = useRef(null); // Ref to access the map instance
+    const mapRef = useRef(null);
 
     const initialCenter = [100.5018, 13.7563];
     const initialZoom = 4;
@@ -32,13 +33,12 @@ function AttractionCount() {
         fetchData();
     }, [])
 
-    // Function to reset the zoom and center
     const handleReset = () => {
         if (mapRef.current) {
             mapRef.current.flyTo({
                 center: initialCenter,
                 zoom: initialZoom,
-                duration: 1500 // Smooth transition in ms
+                duration: 1500
             });
         }
     };
@@ -49,11 +49,11 @@ function AttractionCount() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-16 items-center">
 
                     {/* Map Container */}
-                    <div className="col-span-1 md:col-span-7 h-[500px] relative"> {/* Added relative for button positioning */}
+                    <div className="col-span-1 md:col-span-7 h-[500px] relative">
                         {!isLoading && (
                             <>
                                 <Map
-                                    ref={mapRef} // Attach the ref here
+                                    ref={mapRef}
                                     center={initialCenter}
                                     zoom={initialZoom}
                                 >
@@ -63,27 +63,37 @@ function AttractionCount() {
                                             const lng = parseFloat(item.lon);
                                             return !isNaN(lat) && !isNaN(lng);
                                         })
-                                        .map((item) => (
+                                        .map((item, i) => (
                                             <MapMarker
                                                 key={item.id}
                                                 longitude={parseFloat(item.lon)}
                                                 latitude={parseFloat(item.lat)}
                                             >
                                                 <MarkerContent>
-                                                    <div className="group cursor-pointer transition-transform hover:scale-110">
-                                                        <MapPin
-                                                            className="fill-secondary stroke-primary"
-                                                            size={28}
-                                                        />
-                                                    </div>
+                                                    <Fade
+                                                        delay={100 + (i * 100)}
+                                                        inView={true}
+                                                        inViewOnce={true}
+                                                    >
+
+                                                        <div className="group cursor-pointer transition-transform hover:scale-110">
+                                                            <MapPin
+                                                                className="fill-secondary stroke-primary"
+                                                                size={28}
+                                                            />
+                                                        </div>
+                                                    </Fade>
                                                 </MarkerContent>
                                                 <MarkerPopup>
-                                                    <div className="p-1 space-y-1 font-serif text-primary uppercase min-w-[120px]">
-                                                        <p className="font-bold tracking-widest text-xs">{item.name}</p>
-                                                        <p className="text-[9px] opacity-70">
-                                                            {parseFloat(item.lat).toFixed(4)}, {parseFloat(item.lon).toFixed(4)}
-                                                        </p>
-                                                    </div>
+                                                    <Link href={`/attractionPage/${item.id}`}>
+                                                        <div className="p-1 space-y-1 font-serif text-primary uppercase min-w-[120px]">
+                                                            <p className="font-bold tracking-widest text-xs">{item.name}</p>
+                                                            <p className="text-xs">{item.sub_district}, {item.district}, {item.province}</p>
+                                                            {/* <p className="text-[9px] opacity-70">
+                                                                {parseFloat(item.lat).toFixed(4)}, {parseFloat(item.lon).toFixed(4)}
+                                                            </p> */}
+                                                        </div>
+                                                    </Link>
                                                 </MarkerPopup>
                                             </MapMarker>
                                         ))}
