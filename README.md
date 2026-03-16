@@ -28,8 +28,6 @@ To create a "street-smart" digital companion that embodies Thai hospitality. THA
 ## 📸 Preview
 
 ### Desktop Interface
-
-### Desktop Interface
 <p align="center">
   <img src="images/desktop/desktop_1.jpeg" width="30%" alt="">
   <img src="images/desktop/desktop_2.jpeg" width="30%" alt="">
