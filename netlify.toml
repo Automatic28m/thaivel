@@ -2,5 +2,9 @@
   command = "npm run build"
   publish = ".next"
 
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "MYSQL_CA_CERT,MYSQL_PORT"
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/server/**,.netlify/.next/standalone/**,.netlify/functions-internal/**"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
