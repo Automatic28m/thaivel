@@ -72,3 +72,47 @@ To create a "street-smart" digital companion that embodies Thai hospitality. THA
 **Phanlop Boonluea (Auto)** *Computer Engineering Student, RMUTT*
 
 ---
+
+## Aiven Database + Netlify Deployment
+
+This project uses `mysql2`, so connect it to **Aiven MySQL**.
+
+### 1. Create environment variables
+
+Set these values locally (root `.env.local`) and in Netlify (Site settings > Environment variables):
+
+- `MYSQL_HOST`
+- `MYSQL_PORT`
+- `MYSQL_USER`
+- `MYSQL_PASSWORD`
+- `MYSQL_DATABASE`
+- `MYSQL_SSL=true`
+- `MYSQL_SSL_REJECT_UNAUTHORIZED=true`
+- `MYSQL_CA_CERT` (paste the full Aiven CA certificate)
+
+If your CA is hard to paste as multiline text, use base64 format instead:
+
+- `MYSQL_CA_CERT_BASE64`
+
+and leave `MYSQL_CA_CERT` empty.
+
+### 2. Import schema/data into Aiven
+
+Run your SQL files against the Aiven database:
+
+- `sql/database.sql`
+- `sql/provinces.sql`
+- `sql/category.sql`
+- `sql/attractions.sql`
+
+### 3. Deploy to Netlify
+
+1. Push this repository to GitHub.
+2. In Netlify, click **Add new site** > **Import an existing project**.
+3. Select this repository.
+4. Build command: `npm run build`
+5. Publish directory: `.next`
+6. Add all environment variables listed above.
+7. Deploy.
+
+`netlify.toml` is included and enables the Next.js runtime plugin.

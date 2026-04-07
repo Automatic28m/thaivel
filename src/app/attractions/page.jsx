@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import HorizontalRule from "../components/HorizontalRule";
 import Pagination from "../components/Pagination";
@@ -7,7 +7,7 @@ import AttractionGrid from "../components/AttractionGrid";
 import axios from "axios";
 import { Fade } from "@/components/animate-ui/primitives/effects/fade";
 
-function Attractions() {
+function AttractionsContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -230,4 +230,16 @@ function Attractions() {
 	);
 }
 
-export default Attractions;
+export default function AttractionsPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="bg-secondary min-h-screen flex items-center justify-center">
+					<p className="text-primary font-serif animate-pulse uppercase tracking-widest">Loading Destinations...</p>
+				</div>
+			}
+		>
+			<AttractionsContent />
+		</Suspense>
+	);
+}
