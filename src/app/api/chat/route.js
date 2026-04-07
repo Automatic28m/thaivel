@@ -1,35 +1,50 @@
 import pool from '@/lib/db';
-import { pipeline } from '@xenova/transformers';
 import { NextResponse } from 'next/server';
 
-// 1. The Math Function
-function cosineSimilarity(vecA, vecB) {
-    let dotProduct = 0;
-    let normA = 0;
-    let normB = 0;
-    for (let i = 0; i < vecA.length; i++) {
-        dotProduct += vecA[i] * vecB[i];
-        normA += vecA[i] * vecA[i];
-        normB += vecB[i] * vecB[i];
-    }
-    if (normA === 0 || normB === 0) return 0;
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+function normalizeText(text) {
+    return (text || '')
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
-// Global variable to cache the pipeline so it doesn't reload on every single chat message
-let extractorInstance = null;
+function tokenize(text) {
+    return normalizeText(text)
+        .split(' ')
+        .filter((token) => token.length >= 2);
+}
+
+function getKeywordScore(queryTokens, attraction) {
+    const weightedText = [
+        (attraction.name || '') + ' ' + (attraction.name || ''),
+        attraction.category || '',
+        attraction.province || '',
+        attraction.district || '',
+        attraction.sub_district || '',
+        attraction.geography || '',
+        attraction.description || ''
+    ].join(' ');
+
+    const targetTokens = new Set(tokenize(weightedText));
+    if (targetTokens.size === 0 || queryTokens.length === 0) {
+        return 0;
+    }
+
+    let matches = 0;
+    for (const token of queryTokens) {
+        if (targetTokens.has(token)) {
+            matches += 1;
+        }
+    }
+
+    return matches / queryTokens.length;
+}
 
 export async function POST(req) {
     try {
         const { message } = await req.json();
-
-        // 2. Embed the User's Question 
-        if (!extractorInstance) {
-            extractorInstance = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-        }
-
-        const output = await extractorInstance(message, { pooling: 'mean', normalize: true });
-        const questionVector = Array.from(output.data);
+        const queryTokens = tokenize(message);
 
         // 3. Fetch all embedded attractions from Thaivel MySQL Database
         const [rows] = await pool.query(
@@ -55,13 +70,12 @@ export async function POST(req) {
                 LEFT JOIN districts d ON s.district_id = d.id
                 LEFT JOIN provinces p ON d.province_id = p.id
                 LEFT JOIN geographies g ON p.geography_id = g.id
-            WHERE embedding IS NOT NULL;`
+            ;`
         );
 
-        // 4. Run the Search (Calculate similarities)
+        // Use lightweight keyword scoring to keep serverless bundle size small.
         const scoredAttractions = rows.map(item => {
-            const dbVector = typeof item.embedding === 'string' ? JSON.parse(item.embedding) : item.embedding;
-            const score = cosineSimilarity(questionVector, dbVector);
+            const score = getKeywordScore(queryTokens, item);
             return { ...item, score };
         });
 
