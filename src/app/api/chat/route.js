@@ -134,7 +134,7 @@ export async function POST(req) {
                 'Authorization': `Bearer ${process.env.GROQ_API_KEY}` // Use your env variable
             },
             body: JSON.stringify({
-                model: 'llama-3.1-8b-instant', // Universal high-performance free model
+                model: 'llama3-8b-8192', // Stable legacy model identifier
                 messages: [
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: message }
