@@ -20,7 +20,7 @@ function getSslConfig() {
   const ca = normalizeMultiline(caFromText || caFromBase64);
 
   return {
-    rejectUnauthorized: env('MYSQL_SSL_REJECT_UNAUTHORIZED') !== 'false',
+    rejectUnauthorized: false,
     ...(ca ? { ca } : {}),
   };
 }
