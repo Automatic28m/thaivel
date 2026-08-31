@@ -1,6 +1,8 @@
 import pool from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+export const maxDuration = 60; // Allow AI up to 60 seconds to respond on Vercel
+
 function normalizeText(text) {
     return (text || '')
         .toLowerCase()
